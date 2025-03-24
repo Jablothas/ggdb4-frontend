@@ -30,8 +30,8 @@ export class LayoutService {
         preset: 'Aura',
         primary: 'emerald',
         surface: null,
-        darkTheme: false,
-        menuMode: 'static'
+        darkTheme: true,
+        menuMode: 'overlay'
     };
 
     _state: LayoutState = {
