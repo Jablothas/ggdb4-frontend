@@ -1,34 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DataService } from '../service/data.service';
-import { User } from '../../models/user.model';
+import { DataService } from '../../service/data.service';
+import { Record } from '../../models/record.model'
 
 @Component({
     selector: 'app-dashboard',
+    standalone: true,
     imports: [CommonModule],
-    template: `
-    `
+    template: `<p>Dashboard loaded – check console output.</p>`
 })
 export class Dashboard implements OnInit {
 
     constructor(private dataService: DataService) {}
 
     ngOnInit(): void {
-        const user: User = {
-            username: 'Jablo',
-            pwd: 'FUSsbs4M&LmD78'
-        };
-
-        this.dataService.login(user).subscribe(loginRes => {
-            console.log('Login response:', loginRes);
-
-            if (loginRes?.success) {
-                this.dataService.getAllRecords(user.username).subscribe(records => {
-                    console.log('Records:', records);
-                });
-            } else {
-                console.error('Login failed');
-            }
+        this.dataService.getAllRecords('jablo').subscribe((records: Record[]) => {
+            console.log('Records:', records);
         });
     }
 }
+
