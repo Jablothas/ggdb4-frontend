@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { StyleClassModule } from 'primeng/styleclass';
-import { AppConfigurator } from './app.configurator';
+import { AppConfigurator } from '../../layout/component/app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { DataService } from '../../service/data.service';
+import { LoginService } from '../../service/login.service';
 
 @Component({
     selector: 'app-topbar',
@@ -13,11 +15,22 @@ import { LayoutService } from '../service/layout.service';
     templateUrl: 'app.topbar.html'
 })
 export class AppTopbar {
-    items!: MenuItem[];
+    constructor(
+        public layoutService: LayoutService,
+        private dataService: DataService,
+        private loginService: LoginService,
+        private router: Router
+    ) {}
 
-    constructor(public layoutService: LayoutService) {}
+    logout(): void {
+        const username = this.loginService.getUsername();
 
-    toggleDarkMode() {
-        this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+        if (username) {
+            this.dataService.logout(username).subscribe(() => {
+                this.router.navigate(['/auth/login']);
+            });
+        } else {
+            this.router.navigate(['/auth/login']);
+        }
     }
 }
