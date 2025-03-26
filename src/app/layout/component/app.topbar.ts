@@ -22,6 +22,14 @@ export class AppTopbar {
         private router: Router
     ) {}
 
+    openOverview() {
+        this.router.navigate(['/overview']);
+    }
+
+    openDashboard(): void {
+        this.router.navigate(['/']);
+    }
+
     logout(): void {
         const username = this.loginService.getUsername();
 
