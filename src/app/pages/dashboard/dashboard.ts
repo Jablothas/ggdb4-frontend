@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../service/data.service';
-import { Record } from '../../models/record.model'
+import { GameRecord } from '../../models/record.model'
 
 @Component({
     selector: 'app-dashboard',
@@ -14,7 +14,7 @@ export class Dashboard implements OnInit {
     constructor(private dataService: DataService) {}
 
     ngOnInit(): void {
-        this.dataService.getAllRecords('jablo').subscribe((records: Record[]) => {
+        this.dataService.getAllRecords('jablo').subscribe((records: GameRecord[]) => {
             console.log('Records:', records);
         });
     }

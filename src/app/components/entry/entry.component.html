@@ -1,0 +1,30 @@
+<div class="relative rounded-xl overflow-hidden">
+    <p-card [style]="{ overflow: 'hidden' }" class="shadow-none border-none">
+        <ng-template #header></ng-template>
+
+        <ng-template #title>
+            <div class="flex justify-between items-baseline -mt-2 px-1">
+                <p class="font-bold text-lg">
+                    <span class="text-primary">{{ gameRecord?.name }}</span>
+                    <span *ngIf="getRecordTypeLabel(gameRecord?.type)" class="text-default ml-2">{{ getRecordTypeLabel(gameRecord?.type) }} </span>
+                </p>
+                <p *ngIf="getTotalScore() !== null" class="text-[1.25rem] font-extrabold px-2 py-0.5 rounded-md shadow-sm" [style.color]="getScoreColor(getTotalScore())" [style.border]="'2px solid ' + getScoreColor(getTotalScore())">
+                    {{ getTotalScore() }}
+                </p>
+            </div>
+        </ng-template>
+
+        <ng-template #subtitle></ng-template>
+
+        <!-- Date of finish -->
+        <div class="flex items-center gap-2 text-white text-sm mb-2 mt-1 px-1">
+            <i class="pi pi-calendar"></i>
+            <span>{{ '28-02-1989' }}</span>
+        </div>
+        <!-- Story completed -->
+        <div class="flex items-center gap-2 text-white text-sm mt-1 px-1">
+            <i class="pi pi-check text-green-400"></i>
+            <span>Story completed</span>
+        </div>
+    </p-card>
+</div>

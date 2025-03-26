@@ -4,14 +4,14 @@ import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { User } from '../models/user.model';
-import { Record } from '../models/record.model';
+import { GameRecord } from '../models/record.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DataService {
     private apiUrl = 'https://api.playthrough.info/request';
-    private records: Record[] = [];
+    private records: GameRecord[] = [];
     private sessionId: string | null = null;
 
     constructor(
@@ -55,10 +55,10 @@ export class DataService {
         );
     }
 
-    getAllRecords(username: string): Observable<Record[]> {
+    getAllRecords(username: string): Observable<GameRecord[]> {
         const url = `${this.apiUrl}?action=read&username=${username.toLowerCase()}`;
 
-        return this.http.get<Record[]>(url, {
+        return this.http.get<GameRecord[]>(url, {
             withCredentials: true
         }).pipe(
             tap(records => {
@@ -72,7 +72,7 @@ export class DataService {
         );
     }
 
-    getRecords(): Record[] {
+    getRecords(): GameRecord[] {
         return this.records;
     }
 

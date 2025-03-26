@@ -12,10 +12,10 @@ export const appRoutes: Routes = [
         canActivate: [authGuard],
         children: [
             { path: '', component: Dashboard },
+            { path: 'overview', component: OverviewComponent },
         ]
     },
     { path: 'notfound', component: Notfound },
-    { path: 'overview', component: OverviewComponent },
     { path: 'auth', loadChildren: () => import('./app/service/auth/auth.routes') },
     { path: '**', redirectTo: '/notfound' }
 ];
