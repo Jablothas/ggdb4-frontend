@@ -1,0 +1,74 @@
+<form *ngIf="form" [formGroup]="form">
+    <p-fluid class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left column: Game Record Details -->
+        <div class="card flex flex-col gap-6 lg:order-1">
+            <div class="text-xl font-semibold">Game Record Details</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1">
+                    <label for="name" class="text-sm font-medium">Name</label>
+                    <input id="name" pInputText formControlName="name" />
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="status" class="text-sm font-medium">Status</label>
+                    <p-select id="status" formControlName="status" [options]="statuses" placeholder="Select status"></p-select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="type" class="text-sm font-medium">Type</label>
+                    <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="location" class="text-sm font-medium">Location</label>
+                    <input id="location" pInputText formControlName="location" />
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="createDate" class="text-sm font-medium">Create Date</label>
+                    <p-datepicker id="createDate" formControlName="createDate" showIcon></p-datepicker>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="finishDate" class="text-sm font-medium">Finish Date</label>
+                    <p-datepicker id="finishDate" formControlName="finishDate" showIcon></p-datepicker>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label for="note" class="text-sm font-medium">Note</label>
+                <textarea pTextarea id="note" formControlName="note" rows="3" placeholder="Add note"></textarea>
+            </div>
+        </div>
+
+        <!-- Right column: Scores -->
+        <div class="card flex flex-col gap-6 lg:order-2">
+            <div class="text-xl font-semibold">Scores</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ng-container *ngFor="let field of scoreFields">
+                    <div class="flex flex-col gap-2">
+                        <label [for]="field" class="text-sm font-medium">{{ field }}</label>
+                        <p-slider
+                            [id]="field"
+                            [formControlName]="field"
+                            [min]="0"
+                            [max]="10"
+                            [step]="1"
+                            [style]="{ width: '100%' }"
+                        ></p-slider>
+                        <div class="text-right text-sm text-gray-400">
+                            Score: {{ form.get(field)?.value }}
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+        <!-- Full-width button row -->
+        <div class="col-span-1 lg:col-span-2 flex justify-end gap-4 card p-4">
+            <button pButton type="button" label="Reset" (click)="reset()" class="p-button-secondary"></button>
+            <button pButton type="button" label="Save" icon="pi pi-save" (click)="save()"></button>
+        </div>
+    </p-fluid>
+</form>
