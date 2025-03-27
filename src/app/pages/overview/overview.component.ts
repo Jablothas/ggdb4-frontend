@@ -1,21 +1,60 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { CardModule } from 'primeng/card';
 import { EntryComponent } from '../../components/entry/entry.component';
+import { YearlyLineBreakComponent } from '../../components/yearly-line-break/yearly-line-break.component';
+import { CommonModule } from '@angular/common';
+
+interface GameRecordGroup {
+    year: number | null;
+    yearCount: number | null;
+    gameRecord: GameRecord;
+}
 
 @Component({
     selector: 'app-overview',
-    imports: [CardModule, EntryComponent],
+    standalone: true,
+    imports: [CommonModule, CardModule, EntryComponent, YearlyLineBreakComponent],
     templateUrl: './overview.component.html'
 })
-export class OverviewComponent {
+export class OverviewComponent implements OnInit {
     private readonly dataService = inject(DataService);
-    gameRecords: GameRecord[] = [];
+    groupedGameRecords: GameRecordGroup[] = [];
 
-    constructor() {
-        this.dataService.getRecords().map((gameRecord) => {
-            this.gameRecords.push(gameRecord as GameRecord);
-        });
+    ngOnInit(): void {
+        const records = this.dataService.getRecords() as GameRecord[];
+
+        // Sort by finishDate descending
+        records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+
+        this.groupedGameRecords = this.groupRecordsByYear(records);
+    }
+
+    private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
+        const result: GameRecordGroup[] = [];
+        let lastYear: number | null = null;
+
+        // Count how many entries exist per year
+        const counts = records.reduce((map, record) => {
+            const year = new Date(record.finishDate).getFullYear();
+            map[year] = (map[year] || 0) + 1;
+            return map;
+        }, {} as Record<number, number>);
+
+        for (const record of records) {
+            const year = new Date(record.finishDate).getFullYear();
+            const insertSplitter = year !== lastYear;
+
+            result.push({
+                year: insertSplitter ? year : null,
+                gameRecord: record,
+                yearCount: insertSplitter ? counts[year] : null
+            });
+
+            lastYear = year;
+        }
+
+        return result;
     }
 }

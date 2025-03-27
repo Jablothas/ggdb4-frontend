@@ -26,6 +26,10 @@ export class AppTopbar {
         this.router.navigate(['/overview']);
     }
 
+    openAdd() {
+        this.router.navigate(['/detail']);
+    }
+
     openDashboard(): void {
         this.router.navigate(['/']);
     }

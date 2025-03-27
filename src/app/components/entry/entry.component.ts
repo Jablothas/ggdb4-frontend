@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { GameRecord } from '../../models/record.model';
-import { NgIf} from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { RecordType } from '../../enum/type.enum';
 
 @Component({
     selector: 'app-entry',
-    imports: [CardModule, NgIf],
+    imports: [CardModule, NgIf, DatePipe],
     templateUrl: './entry.component.html',
     styleUrl: './entry.component.scss'
 })
@@ -19,39 +19,44 @@ export class EntryComponent {
 
     getTotalScore(): number {
         if (!this.gameRecord) return 0;
-        return (
-            this.gameRecord.scoreGameplay +
-            this.gameRecord.scorePresentation +
-            this.gameRecord.scoreNarrative +
-            this.gameRecord.scoreQuality +
-            this.gameRecord.scoreSound +
-            this.gameRecord.scoreContent +
-            this.gameRecord.scorePacing +
-            this.gameRecord.scoreBalance +
-            this.gameRecord.scoreUIUX +
-            this.gameRecord.scoreImpression
-        );
+
+        const scores = ['scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality', 'scoreSound',
+            'scoreContent', 'scorePacing', 'scoreBalance', 'scoreUIUX', 'scoreImpression'] as const;
+
+        return scores.reduce((sum, key) => {
+            const value = this.gameRecord![key] ?? 0;
+            return sum + (value === 0 ? 10 : value);
+        }, 0);
     }
 
-    getTriangleColor(score: number): string {
-        if (score >= 95) {
-            return '#FFD700'; // Legendary
-        } else if (score >= 90) {
-            return '#9b59b6'; // Epic
-        } else if (score >= 85) {
-            return '#1e90ff'; // Rare
+    getGradientBackground(score: number): string {
+        const tierColor = this.getTierColor(score);
+        if (!tierColor) {
+            return '#101112';
         }
-        return 'transparent'; // No triangle
+        return `linear-gradient(-135deg, ${tierColor} 55px, #0f1114 0)`;
     }
 
-    getScoreColor(score: number): string {
+    getTierColor(score: number): string | null {
         if (score >= 95) {
-            return '#FFD700'; // Legendary
+            return '#FFD700'; // Gold
         } else if (score >= 90) {
-            return '#9b59b6'; // Epic
+            return '#C0C0C0'; // Silver
         } else if (score >= 85) {
-            return '#1e90ff'; // Rare
+            return '#cd7f32'; // Bronze
         }
-        return '#ffffff'; // Common
+        return 'var(--surface-card)';
+    }
+
+    getScoreTextColor(score: number): string {
+        if (score >= 95) return '#000';
+        if (score >= 90) return '#000';
+        if (score >= 85) return '#000';
+        return 'var(--text-color)';
+    }
+
+    formatDate(): string {
+        const date = this.gameRecord?.finishDate;
+        return '';
     }
 }
