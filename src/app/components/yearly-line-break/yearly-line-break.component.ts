@@ -7,5 +7,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './yearly-line-break.component.scss'
 })
 export class YearlyLineBreakComponent {
-    @Input() year: number | undefined;
+    @Input() year: number | null | undefined;
+    @Input() count: number | null | undefined;
 }

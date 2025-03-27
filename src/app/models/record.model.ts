@@ -10,9 +10,9 @@ export interface GameRecord {
     createDate: string;
     finishDate: string;
     note: string;
-    replay: string;
+    replay: number;
     replayValue: number;
-    mainQuestDone: boolean;
+    mainQuestDone: number;
     scoreGameplay: number;
     scorePresentation: number;
     scoreNarrative: number;
