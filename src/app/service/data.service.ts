@@ -10,7 +10,7 @@ import { GameRecord } from '../models/record.model';
     providedIn: 'root'
 })
 export class DataService {
-    private apiUrl = 'https://api.playthrough.info/request';
+    private apiUrl = 'https://api.ggdb.app/request';
     private records: GameRecord[] = [];
     private sessionId: string | null = null;
 
