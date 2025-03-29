@@ -5,6 +5,8 @@ import { tap, catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { User } from '../models/user.model';
 import { GameRecord } from '../models/record.model';
+import { ToastService } from './toast.service';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
@@ -16,20 +18,19 @@ export class DataService {
 
     constructor(
         private http: HttpClient,
-        public loginService: LoginService
+        public loginService: LoginService,
+        private toast: ToastService,
+        private router: Router
     ) {}
 
     login(user: User): Observable<any> {
         const url = `${this.apiUrl}?action=login`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
         const requestBody = {
             username: user.username.toLowerCase(),
             pwd: user.pwd
         };
-
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-        console.log('Sending login request with body:', requestBody);
 
         return this.http.post<any>(url, JSON.stringify(requestBody), {
             headers,
@@ -41,15 +42,23 @@ export class DataService {
                 this.loginService.setLoggedIn(success);
 
                 if (success) {
-                    this.loginService.setUsername(requestBody.username);
-                }
+                    const username = requestBody.username;
+                    this.loginService.setUsername(username);
 
-                console.log('Login response:', response);
+                    // Delay toast after route navigation
+                    setTimeout(() => {
+                        this.toast.success('Welcome', `Hello, ${username}!`);
+                    }, 200);
+
+                    this.router.navigate(['/']);
+                } else {
+                    this.toast.error('Login failed', 'Invalid credentials.');
+                }
             }),
             catchError(error => {
                 this.loginService.setLoggedIn(false);
                 this.loginService.setUsername(null);
-                console.error('Login failed:', error);
+                this.toast.error('Login failed', 'An error occurred during login.');
                 return of({ success: false });
             })
         );
@@ -63,10 +72,8 @@ export class DataService {
         }).pipe(
             tap(records => {
                 this.records = records;
-                console.log('Records fetched:', records.length, records);
             }),
             catchError(error => {
-                console.error('Failed to load records:', error);
                 return of([]);
             })
         );
@@ -79,15 +86,54 @@ export class DataService {
     createRecord(username: string, recordData: any): Observable<any> {
         const url = `${this.apiUrl}?action=create&username=${username.toLowerCase()}`;
         const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
         return this.http.post<any>(url, JSON.stringify(recordData), {
             headers,
             withCredentials: true
         }).pipe(
-            tap((res) => {
-                console.log('Created record response:', res);
+            tap(() => {
+                // No toast here — handled by Overview via queryParams
             }),
             catchError(error => {
-                console.error('Failed to create record:', error);
+                this.toast.error('Create failed', 'Something went wrong while saving.');
+                return of({ success: false });
+            })
+        );
+    }
+
+    updateRecord(username: string, recordData: any): Observable<any> {
+        const url = `${this.apiUrl}?action=update&username=${username.toLowerCase()}`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+        return this.http.post<any>(url, JSON.stringify(recordData), {
+            headers,
+            withCredentials: true
+        }).pipe(
+            tap(() => {
+                // No toast here — handled by Overview via queryParams
+            }),
+            catchError(error => {
+                this.toast.error('Update failed', 'Something went wrong while updating.');
+                return of({ success: false });
+            })
+        );
+    }
+
+    deleteRecord(username: string, recordId: number): Observable<any> {
+        const url = `${this.apiUrl}?action=delete&username=${username.toLowerCase()}`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+        const body = { id: String(recordId) };
+
+        return this.http.post<any>(url, JSON.stringify(body), {
+            headers,
+            withCredentials: true
+        }).pipe(
+            tap(() => {
+                this.toast.success('Deleted', `Record ID ${recordId} has been deleted.`);
+            }),
+            catchError(error => {
+                this.toast.error('Delete failed', 'Something went wrong while deleting.');
                 return of({ success: false });
             })
         );
@@ -101,10 +147,8 @@ export class DataService {
                 this.sessionId = null;
                 this.loginService.setLoggedIn(false);
                 this.loginService.setUsername(null);
-                console.log('Logged out');
             }),
             catchError(error => {
-                console.error('Logout failed:', error);
                 return of({ success: false });
             })
         );

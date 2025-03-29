@@ -19,24 +19,12 @@ import { Locations } from '../../enum/location.enum';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
+import { ToastService } from '../../service/toast.service';
 
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        ToggleSwitchModule,
-        SelectModule,
-        DatePickerModule,
-        TextareaModule,
-        FloatLabelModule,
-        SliderModule,
-        ButtonModule,
-        Rating,
-        RadioButton
-    ],
+    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, RadioButton],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
 })
@@ -47,11 +35,7 @@ export class DetailComponent implements OnInit {
     recordTypes = Object.values(RecordType);
     locationTypes = Object.values(Locations);
 
-    scoreFields: string[] = [
-        'scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality',
-        'scoreSound', 'scoreContent', 'scorePacing', 'scoreBalance',
-        'scoreUIUX', 'scoreImpression'
-    ];
+    scoreFields: string[] = ['scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality', 'scoreSound', 'scoreContent', 'scorePacing', 'scoreBalance', 'scoreUIUX', 'scoreImpression'];
 
     scoreFieldComments: Record<string, string> = {
         scoreGameplay: 'How engaging and responsive was the core gameplay loop?',
@@ -77,17 +61,18 @@ export class DetailComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private toast: ToastService
     ) {}
 
     ngOnInit(): void {
-        this.route.queryParams.subscribe(params => {
+        this.route.queryParams.subscribe((params) => {
             const recordParam = params['record'];
             if (recordParam === 'new') {
                 this.formEditable = true;
                 this.initForm();
             } else if (!isNaN(+recordParam)) {
-                const record = this.dataService.getRecords().find(r => r.id === +recordParam);
+                const record = this.dataService.getRecords().find((r) => r.id === +recordParam);
                 if (record) {
                     this.formEditable = false;
                     this.initForm(record);
@@ -114,14 +99,8 @@ export class DetailComponent implements OnInit {
             replayValue: [record?.replayValue ?? null, Validators.required],
             mainQuestDone: [record?.mainQuestDone === 1],
             replay: [record?.replay === 1],
-            ...Object.fromEntries(this.scoreFields.map((field) => [
-                field,
-                record?.[field as keyof GameRecord] ?? 1
-            ])),
-            ...Object.fromEntries(this.scoreFields.map((field) => [
-                `${field}Enabled`,
-                record ? record[field as keyof GameRecord] !== 0 : true
-            ]))
+            ...Object.fromEntries(this.scoreFields.map((field) => [field, record?.[field as keyof GameRecord] ?? 1])),
+            ...Object.fromEntries(this.scoreFields.map((field) => [`${field}Enabled`, record ? record[field as keyof GameRecord] !== 0 : true]))
         });
 
         this.scoreFields.forEach((field) => {
@@ -176,6 +155,7 @@ export class DetailComponent implements OnInit {
 
         const raw = this.form.value;
         const payload = {
+            id: raw.id,
             name: raw.name,
             status: raw.status,
             type: raw.type,
@@ -189,20 +169,28 @@ export class DetailComponent implements OnInit {
             ...Object.fromEntries(this.scoreFields.map((field) => [field, raw[field]]))
         };
 
-        const username = this.dataService.loginService.getUsername(); // assuming this exists
-
+        const username = this.dataService.loginService.getUsername();
         if (!username) {
             console.error('No username found');
             return;
         }
 
-        this.dataService.createRecord(username, payload).subscribe({
-            next: (res) => {
-                console.log('Record created:', res);
-                this.router.navigate(['/overview']);
+        const isUpdate = raw.id && raw.id > 0;
+        const request$ = isUpdate
+            ? this.dataService.updateRecord(username, payload)
+            : this.dataService.createRecord(username, payload);
+
+        request$.subscribe({
+            next: () => {
+                this.router.navigate(['/overview'], {
+                    queryParams: {
+                        toast: isUpdate ? 'updated' : 'created',
+                        game: payload.name
+                    }
+                });
             },
-            error: (err) => {
-                console.error('Create failed:', err);
+            error: () => {
+                this.toast.error(`${isUpdate ? 'Update' : 'Create'} failed`, 'Something went wrong while saving.');
             }
         });
     }
