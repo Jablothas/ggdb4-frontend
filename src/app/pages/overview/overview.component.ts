@@ -5,6 +5,8 @@ import { CardModule } from 'primeng/card';
 import { EntryComponent } from '../../components/entry/entry.component';
 import { YearlyLineBreakComponent } from '../../components/yearly-line-break/yearly-line-break.component';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../service/toast.service';
 
 interface GameRecordGroup {
     year: number | null;
@@ -20,15 +22,55 @@ interface GameRecordGroup {
 })
 export class OverviewComponent implements OnInit {
     private readonly dataService = inject(DataService);
+    private readonly route = inject(ActivatedRoute);
+    private readonly toast = inject(ToastService);
+    private readonly router = inject(Router);
+
     groupedGameRecords: GameRecordGroup[] = [];
 
     ngOnInit(): void {
-        const records = this.dataService.getRecords() as GameRecord[];
+        this.route.queryParams.subscribe((params) => {
+            const toastType = params['toast'];
+            const gameName = params['game'];
 
-        // Sort by finishDate descending
-        records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+            if (toastType && gameName) {
+                let message = '';
+                let summary = '';
 
-        this.groupedGameRecords = this.groupRecordsByYear(records);
+                if (toastType === 'created') {
+                    summary = 'Saved!';
+                    message = `${gameName} successfully finished!`;
+                } else if (toastType === 'updated') {
+                    summary = 'Updated!';
+                    message = `${gameName} successfully updated.`;
+                } else if (toastType === 'deleted') {
+                    summary = 'Deleted!';
+                    message = `${gameName} has been deleted.`;
+                }
+
+                if (message) {
+                    setTimeout(() => {
+                        this.toast.success(summary, message);
+                    }, 0);
+
+                    this.router.navigate([], {
+                        queryParams: {
+                            toast: null,
+                            game: null
+                        },
+                        queryParamsHandling: 'merge'
+                    });
+                }
+            }
+        });
+
+        const username = this.dataService.loginService.getUsername();
+        if (!username) return;
+
+        this.dataService.getAllRecords(username).subscribe(records => {
+            records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+            this.groupedGameRecords = this.groupRecordsByYear(records);
+        });
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
@@ -36,11 +78,14 @@ export class OverviewComponent implements OnInit {
         let lastYear: number | null = null;
 
         // Count how many entries exist per year
-        const counts = records.reduce((map, record) => {
-            const year = new Date(record.finishDate).getFullYear();
-            map[year] = (map[year] || 0) + 1;
-            return map;
-        }, {} as Record<number, number>);
+        const counts = records.reduce(
+            (map, record) => {
+                const year = new Date(record.finishDate).getFullYear();
+                map[year] = (map[year] || 0) + 1;
+                return map;
+            },
+            {} as Record<number, number>
+        );
 
         for (const record of records) {
             const year = new Date(record.finishDate).getFullYear();

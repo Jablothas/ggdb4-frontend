@@ -3,6 +3,7 @@ import { CardModule } from 'primeng/card';
 import { GameRecord } from '../../models/record.model';
 import { DatePipe, NgIf } from '@angular/common';
 import { RecordType } from '../../enum/type.enum';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-entry',
@@ -12,6 +13,9 @@ import { RecordType } from '../../enum/type.enum';
 })
 export class EntryComponent {
     @Input() gameRecord: GameRecord | undefined;
+
+    constructor(private router: Router) {
+    }
 
     getRecordTypeLabel(type: keyof typeof RecordType | undefined): string {
         return type && type !== 'FULL' ? RecordType[type] : '';
@@ -53,6 +57,14 @@ export class EntryComponent {
         if (score >= 90) return '#000';
         if (score >= 85) return '#000';
         return 'var(--text-color)';
+    }
+
+    goToDetail(): void {
+        if (this.gameRecord) {
+            this.router.navigate(['/detail'], {
+                queryParams: { record: this.gameRecord.id }
+            });
+        }
     }
 
     formatDate(): string {
