@@ -47,7 +47,7 @@ export class DataService {
 
                     // Delay toast after route navigation
                     setTimeout(() => {
-                        this.toast.success('Welcome', `Hello, ${username}!`);
+                        // Temporary disabled toast here
                     }, 200);
 
                     this.router.navigate(['/']);
@@ -130,7 +130,7 @@ export class DataService {
             withCredentials: true
         }).pipe(
             tap(() => {
-                this.toast.success('Deleted', `Record ID ${recordId} has been deleted.`);
+                // No toast here — handled by Overview via queryParams
             }),
             catchError(error => {
                 this.toast.error('Delete failed', 'Something went wrong while deleting.');

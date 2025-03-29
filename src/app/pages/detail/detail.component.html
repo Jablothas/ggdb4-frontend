@@ -101,6 +101,16 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         <!-- Buttons -->
         <div class="card col-span-1 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 h-full">
+            <button
+                pButton
+                type="button"
+                label="Save"
+                icon="pi pi-save"
+                (click)="save()"
+                [disabled]="!formEditable || form.invalid"
+                class="w-full sm:w-auto"
+            ></button>
+            <span> | </span>
             <button pButton type="button" label="Reset" (click)="reset()" class="p-button-secondary w-full sm:w-auto"></button>
             <button
                 *ngIf="form?.get('id')?.value"
@@ -115,12 +125,13 @@
             <button
                 pButton
                 type="button"
-                label="Save"
-                icon="pi pi-save"
-                (click)="save()"
-                [disabled]="!formEditable || form.invalid"
-                class="w-full sm:w-auto"
+                label="Delete"
+                icon="pi pi-trash"
+                (click)="confirmDelete()"
+                class="p-button-secondary"
+                *ngIf="form.get('id')?.value > 0"
             ></button>
+
         </div>
 
         <!-- Total Score -->

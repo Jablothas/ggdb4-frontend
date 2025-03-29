@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { ToastService } from '../../service/toast.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
     selector: 'app-detail',
@@ -62,7 +63,8 @@ export class DetailComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private route: ActivatedRoute,
-        private toast: ToastService
+        private toast: ToastService,
+        private confirmationService: ConfirmationService
     ) {}
 
     ngOnInit(): void {
@@ -163,7 +165,7 @@ export class DetailComponent implements OnInit {
             createDate: raw.createDate ? new Date(raw.createDate).toISOString().split('T')[0] : '',
             finishDate: raw.finishDate ? new Date(raw.finishDate).toISOString().split('T')[0] : '',
             note: raw.note,
-            replay: raw.replay ? 'Yes' : 'No',
+            replay: raw.replay ? 1 : 0,
             mainQuestDone: raw.mainQuestDone ? 1 : 0,
             replayValue: raw.replayValue,
             ...Object.fromEntries(this.scoreFields.map((field) => [field, raw[field]]))
@@ -176,9 +178,7 @@ export class DetailComponent implements OnInit {
         }
 
         const isUpdate = raw.id && raw.id > 0;
-        const request$ = isUpdate
-            ? this.dataService.updateRecord(username, payload)
-            : this.dataService.createRecord(username, payload);
+        const request$ = isUpdate ? this.dataService.updateRecord(username, payload) : this.dataService.createRecord(username, payload);
 
         request$.subscribe({
             next: () => {
@@ -191,6 +191,30 @@ export class DetailComponent implements OnInit {
             },
             error: () => {
                 this.toast.error(`${isUpdate ? 'Update' : 'Create'} failed`, 'Something went wrong while saving.');
+            }
+        });
+    }
+
+    confirmDelete(): void {
+        this.confirmationService.confirm({
+            message: 'Are you sure you want to delete this entry?',
+            header: 'Confirm Deletion',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.performDelete();
+            }
+        });
+    }
+
+    performDelete(): void {
+        const id = this.form.get('id')?.value;
+        const username = this.dataService.loginService.getUsername();
+        if (!username || !id) return;
+
+        this.dataService.deleteRecord(username, id).subscribe({
+            next: () => {
+                this.toast.success('Deleted', `${this.form.get('name')?.value} has been deleted.`);
+                this.router.navigate(['/overview']);
             }
         });
     }

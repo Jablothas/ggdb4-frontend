@@ -5,14 +5,16 @@ import { filter, Subscription } from 'rxjs';
 import { AppTopbar } from './app.topbar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '../service/layout.service';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, RouterModule, AppFooter],
+    imports: [CommonModule, AppTopbar, RouterModule, AppFooter, ConfirmDialog],
     template: `
         <div class="layout-wrapper" [ngClass]="containerClass">
             <app-topbar></app-topbar>
+            <p-confirmDialog></p-confirmDialog>
             <div class="layout-main-container">
                 <div class="layout-main">
                     <router-outlet></router-outlet>

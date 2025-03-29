@@ -2,7 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app.config';
 import { AppComponent } from './app.component';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { importProvidersFrom } from '@angular/core';
 
 bootstrapApplication(AppComponent, {
@@ -10,6 +10,7 @@ bootstrapApplication(AppComponent, {
     providers: [
         ...appConfig.providers,
         importProvidersFrom(ToastModule),
-        MessageService
+        MessageService,
+        ConfirmationService
     ]
 }).catch((err) => console.error(err));
