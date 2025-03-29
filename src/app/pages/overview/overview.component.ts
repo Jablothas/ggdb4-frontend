@@ -23,12 +23,12 @@ export class OverviewComponent implements OnInit {
     groupedGameRecords: GameRecordGroup[] = [];
 
     ngOnInit(): void {
-        const records = this.dataService.getRecords() as GameRecord[];
-
-        // Sort by finishDate descending
-        records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
-
-        this.groupedGameRecords = this.groupRecordsByYear(records);
+        const username = this.dataService.loginService.getUsername();
+        if (!username) return;
+        this.dataService.getAllRecords(username).subscribe(records => {
+            records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+            this.groupedGameRecords = this.groupRecordsByYear(records);
+        });
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {

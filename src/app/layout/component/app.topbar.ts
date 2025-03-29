@@ -26,8 +26,10 @@ export class AppTopbar {
         this.router.navigate(['/overview']);
     }
 
-    openAdd() {
-        this.router.navigate(['/detail']);
+    openAdd(): void {
+        this.router.navigate(['/detail'], {
+            queryParams: { record: 'new' }
+        });
     }
 
     openDashboard(): void {

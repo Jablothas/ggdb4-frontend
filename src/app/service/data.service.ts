@@ -16,7 +16,7 @@ export class DataService {
 
     constructor(
         private http: HttpClient,
-        private loginService: LoginService
+        public loginService: LoginService
     ) {}
 
     login(user: User): Observable<any> {
@@ -74,6 +74,23 @@ export class DataService {
 
     getRecords(): GameRecord[] {
         return this.records;
+    }
+
+    createRecord(username: string, recordData: any): Observable<any> {
+        const url = `${this.apiUrl}?action=create&username=${username.toLowerCase()}`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post<any>(url, JSON.stringify(recordData), {
+            headers,
+            withCredentials: true
+        }).pipe(
+            tap((res) => {
+                console.log('Created record response:', res);
+            }),
+            catchError(error => {
+                console.error('Failed to create record:', error);
+                return of({ success: false });
+            })
+        );
     }
 
     logout(username: string): Observable<any> {

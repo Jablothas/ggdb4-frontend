@@ -6,22 +6,22 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1">
-                    <label for="name" class="text-sm font-medium">Name</label>
+                    <label for="name" class="text-sm font-medium">Name *</label>
                     <input id="name" pInputText formControlName="name" />
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <label for="type" class="text-sm font-medium">Type</label>
+                    <label for="type" class="text-sm font-medium">Type *</label>
                     <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <label for="location" class="text-sm font-medium">Location</label>
+                    <label for="location" class="text-sm font-medium">Location *</label>
                     <p-select id="location" formControlName="location" [options]="locationTypes" placeholder="Select location"></p-select>
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <label for="finishDate" class="text-sm font-medium">Finish Date</label>
+                    <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
                     <p-datepicker id="finishDate" formControlName="finishDate" showIcon></p-datepicker>
                 </div>
             </div>
@@ -33,15 +33,27 @@
 
             <!-- Replay Value Radios -->
             <div class="flex flex-col gap-2">
-                <label class="text-sm font-medium">Replay Value</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                <label class="text-sm font-medium">Replay Value *</label>
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2"
+                    [ngClass]="{ 'border border-red-500 rounded p-2': form.get('replayValue')?.invalid && form.get('replayValue')?.touched }"
+                >
                     <ng-container *ngFor="let option of replayValueOptions">
                         <div class="flex items-center gap-2">
-                            <p-radioButton name="replayValue" [value]="option.value" formControlName="replayValue"></p-radioButton>
+                            <p-radioButton
+                                name="replayValue"
+                                [value]="option.value"
+                                formControlName="replayValue"
+                            ></p-radioButton>
                             <label class="text-sm font-medium">{{ option.label }}</label>
                         </div>
                     </ng-container>
                 </div>
+
+                <small class="text-red-500 text-xs" *ngIf="form.get('replayValue')?.invalid && form.get('replayValue')?.touched">
+                    Please select a replay value.
+                </small>
             </div>
 
             <!-- Toggles -->
@@ -90,7 +102,25 @@
         <!-- Buttons -->
         <div class="card col-span-1 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 h-full">
             <button pButton type="button" label="Reset" (click)="reset()" class="p-button-secondary w-full sm:w-auto"></button>
-            <button pButton type="button" label="Save" icon="pi pi-save" (click)="save()" class="w-full sm:w-auto"></button>
+            <button
+                *ngIf="form?.get('id')?.value"
+                pButton
+                type="button"
+                [label]="formEditable ? 'Cancel Edit' : 'Edit'"
+                [icon]="formEditable ? 'pi pi-times' : 'pi pi-pencil'"
+                [ngClass]="formEditable ? 'p-button-danger' : 'p-button-secondary'"
+                class="w-full sm:w-auto"
+                (click)="toggleEdit()"
+            ></button>
+            <button
+                pButton
+                type="button"
+                label="Save"
+                icon="pi pi-save"
+                (click)="save()"
+                [disabled]="!formEditable || form.invalid"
+                class="w-full sm:w-auto"
+            ></button>
         </div>
 
         <!-- Total Score -->
