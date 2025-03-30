@@ -1,0 +1,64 @@
+<p class="text-xl mb-4">Dashboard</p>
+
+<div class="flex flex-col gap-4">
+    <!-- Top card: Welcome -->
+    <div class="w-full">
+        <div class="card mb-0">
+            <p>Welcome to the 4.0 Beta, <span style="color: var(--primary-color)">{{ username }}</span>!</p>
+            <p>If you find any bugs please make sure to report them using the <i class="pi pi-question" style="color: var(--primary-color)"></i> function.</p>
+        </div>
+    </div>
+    <!-- Total games -->
+    <div class="flex flex-col lg:flex-row gap-4">
+        <div class="w-full lg:w-1/4">
+            <div class="card mb-0 h-full">
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <span class="block text-muted-color font-medium mb-4">All time completed</span>
+                        <div><span class="text-primary font-bold text-4xl">{{ countAllRecords() }}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Total games current year -->
+        <div class="w-full lg:w-1/4">
+            <div class="card mb-0 h-full">
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <span class="block text-muted-color font-medium mb-4">This year completed</span>
+                        <div><span class="text-primary font-bold text-4xl">{{ countRecordsPerYear(getCurrentYear()) }}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Total games previous year -->
+        <div class="w-full lg:w-1/4">
+            <div class="card mb-0 h-full">
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <span class="block text-muted-color font-medium mb-4">Last year completed</span>
+                        <div><span class="text-primary font-bold text-4xl">{{ countRecordsPerYear(getPreviousYear()) }}</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-1/4">
+            <div class="card mb-0 h-full">
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <span class="block text-muted-color font-medium mb-4">Highest rated game ever</span>
+                        <span class="text-primary font-bold text-4xl">
+    {{ bestGame?.name }}
+</span>
+                        <span class="text-muted-color text-base">
+    ({{ bestGame?.score }})
+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-game-completion-chart [records]="records"></app-game-completion-chart>
