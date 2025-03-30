@@ -15,6 +15,7 @@ export class DataService {
     private apiUrl = 'https://api.ggdb.app/request';
     private records: GameRecord[] = [];
     private sessionId: string | null = null;
+    private username: string | null = null;
 
     constructor(
         private http: HttpClient,
@@ -49,7 +50,7 @@ export class DataService {
                     setTimeout(() => {
                         // Temporary disabled toast here
                     }, 200);
-
+                    this.username = username;
                     this.router.navigate(['/']);
                 } else {
                     this.toast.error('Login failed', 'Invalid credentials.');
@@ -62,6 +63,10 @@ export class DataService {
                 return of({ success: false });
             })
         );
+    }
+
+    getUsername(): string {
+        return this.username ?? '';
     }
 
     getAllRecords(username: string): Observable<GameRecord[]> {
