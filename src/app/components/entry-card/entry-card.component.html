@@ -36,7 +36,6 @@
 
             <!-- Score in top-right corner -->
             <span *ngIf="getTotalScore() !== null" class="absolute top-4 right-3 text-[1.5rem] font-extrabold leading-none flex items-center gap-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-                <!-- 🔥 Replay icon always shown if replay -->
                 <i
                     *ngIf="gameRecord?.replay === 1"
                     class="bi bi-fire text-[1.25rem] mr-1 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(0,0,0,0.3)]"
@@ -47,8 +46,6 @@
                     }"
                     title="Replayed"
                 ></i>
-
-                <!-- ✨ Stars only for tier scores -->
                 <i
                     *ngIf="isTierScore(getTotalScore())"
                     class="bi bi-stars text-[1.4rem] inline-block align-middle bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(0,0,0,0.3)]"

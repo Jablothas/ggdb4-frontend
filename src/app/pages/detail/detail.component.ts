@@ -94,7 +94,7 @@ export class DetailComponent implements OnInit {
             name: [record?.name ?? '', Validators.required],
             status: [record?.status ?? ''],
             type: [record?.type ?? '', Validators.required],
-            location: [record?.location ?? '', Validators.required],
+            location: [record?.location ? Locations[record.location as keyof typeof Locations] : '', Validators.required],
             createDate: [record?.createDate ? new Date(record.createDate) : ''],
             finishDate: [record?.finishDate ? new Date(record.finishDate) : '', Validators.required],
             note: [record?.note ?? ''],
@@ -225,5 +225,9 @@ export class DetailComponent implements OnInit {
 
     getEnumKeyFromValue(enumObj: any, value: string): string {
         return Object.keys(enumObj).find(key => enumObj[key] === value) || value;
+    }
+
+    returnToOverview() {
+        this.router.navigate(['/overview'], {})
     }
 }

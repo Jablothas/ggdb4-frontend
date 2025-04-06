@@ -1,25 +1,58 @@
 <form *ngIf="form" [formGroup]="form">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-        <!-- Info (1/3) -->
-        <div class="card flex flex-col gap-6 md:col-span-1 h-full">
+    <!-- TOP SECTION: Buttons & Total Score -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+        <!-- Buttons -->
+        <div class="card col-span-1 flex items-center justify-between gap-2 h-full">
+            <!-- Return button (left-aligned) -->
+            <button pButton type="button" label="Return" icon="pi pi-arrow-left" class="p-button-secondary" (click)="returnToOverview()"></button>
+
+            <!-- Rest of the buttons (right-aligned) -->
+            <div class="flex items-center gap-2">
+                <button pButton type="button" label="Save" icon="pi pi-save" (click)="save()" [disabled]="!formEditable || form.invalid"></button>
+                <span>|</span>
+                <button pButton type="button" label="Reset" (click)="reset()" class="p-button-secondary"></button>
+                <button
+                    *ngIf="form?.get('id')?.value"
+                    pButton
+                    type="button"
+                    [label]="formEditable ? 'Cancel Edit' : 'Edit'"
+                    [icon]="formEditable ? 'pi pi-times' : 'pi pi-pencil'"
+                    [ngClass]="formEditable ? 'p-button-danger' : 'p-button-secondary'"
+                    (click)="toggleEdit()"
+                ></button>
+                <button pButton type="button" label="Delete" icon="pi pi-trash" class="p-button-secondary" (click)="confirmDelete()" *ngIf="form.get('id')?.value > 0"></button>
+            </div>
+        </div>
+
+        <!-- Total Score -->
+        <div class="card col-span-1 md:col-span-2 flex flex-col justify-between gap-2">
+            <label class="text-sm font-semibold">Final score preview</label>
+            <div class="relative w-full h-3 bg-gray-700 rounded-full overflow-hidden">
+                <div class="absolute top-0 left-0 h-full bg-[var(--primary-color)] transition-all duration-300" [style.width.%]="totalScore"></div>
+            </div>
+            <div class="text-right text-sm">{{ totalScore }}/100</div>
+        </div>
+    </div>
+
+    <!-- BOTTOM SECTION: Information & Scores (Reduced vertical spacing) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 items-stretch">
+        <!-- Information -->
+        <div class="card flex flex-col gap-3 md:col-span-1">
             <div class="text-xl font-semibold">Record Information</div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="flex flex-col gap-1">
                     <label for="name" class="text-sm font-medium">Name *</label>
                     <input id="name" pInputText formControlName="name" />
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label for="type" class="text-sm font-medium">Type *</label>
                     <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label for="location" class="text-sm font-medium">Location *</label>
                     <p-select id="location" formControlName="location" [options]="locationTypes" placeholder="Select location"></p-select>
                 </div>
-
                 <div class="flex flex-col gap-1">
                     <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
                     <p-datepicker id="finishDate" formControlName="finishDate" showIcon></p-datepicker>
@@ -28,119 +61,56 @@
 
             <div class="flex flex-col gap-1">
                 <label for="note" class="text-sm font-medium">Note</label>
-                <textarea pTextarea id="note" formControlName="note" rows="3" placeholder="Add note"></textarea>
+                <textarea pTextarea id="note" formControlName="note" rows="2" placeholder="Add note"></textarea>
             </div>
 
-            <!-- Replay Value Radios -->
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-medium">Replay Value *</label>
-
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2"
-                    [ngClass]="{ 'border border-red-500 rounded p-2': form.get('replayValue')?.invalid && form.get('replayValue')?.touched }"
-                >
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-1">
                     <ng-container *ngFor="let option of replayValueOptions">
-                        <div class="flex items-center gap-2">
-                            <p-radioButton
-                                name="replayValue"
-                                [value]="option.value"
-                                formControlName="replayValue"
-                            ></p-radioButton>
-                            <label class="text-sm font-medium">{{ option.label }}</label>
+                        <div class="flex items-center gap-1">
+                            <p-radioButton name="replayValue" [value]="option.value" formControlName="replayValue"></p-radioButton>
+                            <label class="text-sm">{{ option.label }}</label>
                         </div>
                     </ng-container>
                 </div>
-
-                <small class="text-red-500 text-xs" *ngIf="form.get('replayValue')?.invalid && form.get('replayValue')?.touched">
-                    Please select a replay value.
-                </small>
+                <small class="text-red-500 text-xs" *ngIf="form.get('replayValue')?.invalid && form.get('replayValue')?.touched"> Please select a replay value. </small>
             </div>
 
-            <!-- Toggles -->
-            <div class="flex flex-col gap-4 pt-2">
-                <div class="flex items-center gap-3">
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
                     <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
-                    <label for="mainQuestDone" class="text-sm font-medium">Main Quest / Story / Campaign finished</label>
+                    <label class="text-sm">Main Quest / Story / Campaign finished</label>
                 </div>
-                <div class="flex items-center gap-3">
-                    <p-toggleSwitch id="replay" formControlName="replay"></p-toggleSwitch>
-                    <label for="replay" class="text-sm font-medium">Replay</label>
+                <div class="flex items-center gap-2">
+                    <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
+                    <label class="text-sm">Replay</label>
                 </div>
             </div>
         </div>
 
-        <!-- Scores (2/3) -->
-        <div class="card flex flex-col gap-6 md:col-span-2 h-full">
-            <div class="text-xl font-semibold text-[var(--text-color)]">Scores</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
+        <!-- Scores -->
+        <div class="card flex flex-col gap-3 md:col-span-2">
+            <div class="text-xl font-semibold">Scores</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
                 <ng-container *ngFor="let field of scoreFields">
-                    <div class="flex flex-col gap-2 pb-4 border-b border-[var(--text-color)] border-opacity-10">
+                    <div class="flex flex-col gap-1 pb-3 border-b border-[var(--text-color)] border-opacity-10">
                         <div class="flex items-center justify-between">
                             <label [for]="field" class="text-sm font-semibold text-[var(--primary-color)] tracking-normal">
                                 {{ field.replace('score', '') }}
                             </label>
-                            <p-toggleSwitch [formControlName]="field + 'Enabled'" styleClass="ml-2" [style]="{ '--tw-scale-x': '0.85', '--tw-scale-y': '0.85' }"></p-toggleSwitch>
+                            <p-toggleSwitch [formControlName]="field + 'Enabled'"></p-toggleSwitch>
                         </div>
-
-                        <div class="text-sm text-[var(--text-color)] opacity-80 leading-snug">
+                        <div class="text-sm opacity-80">
                             {{ scoreFieldComments[field] }}
                         </div>
-
-                        <div class="flex items-center gap-3 pt-1">
-                            <p-rating [formControlName]="field" [disabled]="!form.get(field + 'Enabled')?.value" [stars]="10" [style]="{ fontSize: '1.3rem', color: 'var(--primary-color)' }"></p-rating>
-
-                            <span *ngIf="form.get(field + 'Enabled')?.value" class="text-sm text-[var(--primary-color)] min-w-[36px]"> {{ form.get(field)?.value }}/10 </span>
+                        <div class="flex items-center gap-2 pt-1">
+                            <p-rating [formControlName]="field" [disabled]="!form.get(field + 'Enabled')?.value" [stars]="10"></p-rating>
+                            <span *ngIf="form.get(field + 'Enabled')?.value" class="text-sm min-w-[30px]"> {{ form.get(field)?.value }}/10 </span>
                         </div>
                     </div>
                 </ng-container>
             </div>
-        </div>
-    </div>
-
-    <!-- Bottom Section -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        <!-- Buttons -->
-        <div class="card col-span-1 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 h-full">
-            <button
-                pButton
-                type="button"
-                label="Save"
-                icon="pi pi-save"
-                (click)="save()"
-                [disabled]="!formEditable || form.invalid"
-                class="w-full sm:w-auto"
-            ></button>
-            <span> | </span>
-            <button pButton type="button" label="Reset" (click)="reset()" class="p-button-secondary w-full sm:w-auto"></button>
-            <button
-                *ngIf="form?.get('id')?.value"
-                pButton
-                type="button"
-                [label]="formEditable ? 'Cancel Edit' : 'Edit'"
-                [icon]="formEditable ? 'pi pi-times' : 'pi pi-pencil'"
-                [ngClass]="formEditable ? 'p-button-danger' : 'p-button-secondary'"
-                class="w-full sm:w-auto"
-                (click)="toggleEdit()"
-            ></button>
-            <button
-                pButton
-                type="button"
-                label="Delete"
-                icon="pi pi-trash"
-                (click)="confirmDelete()"
-                class="p-button-secondary"
-                *ngIf="form.get('id')?.value > 0"
-            ></button>
-
-        </div>
-
-        <!-- Total Score -->
-        <div class="card col-span-1 md:col-span-2 flex flex-col justify-between h-full">
-            <label class="text-sm font-semibold text-[var(--text-color)] tracking-wide mb-2 block"> Total Score (scaled) </label>
-            <div class="relative w-full h-3 bg-gray-700 rounded-full overflow-hidden">
-                <div class="absolute top-0 left-0 h-full bg-[var(--primary-color)] transition-all duration-300" [style.width.%]="totalScore"></div>
-            </div>
-            <div class="text-right text-sm text-[var(--primary-color)] mt-1">{{ totalScore }}/100</div>
         </div>
     </div>
 </form>
