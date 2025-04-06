@@ -161,7 +161,7 @@ export class DetailComponent implements OnInit {
             name: raw.name,
             status: raw.status,
             type: raw.type,
-            location: raw.location,
+            location: this.getEnumKeyFromValue(Locations, raw.location),
             createDate: raw.createDate ? new Date(raw.createDate).toISOString().split('T')[0] : '',
             finishDate: raw.finishDate ? new Date(raw.finishDate).toISOString().split('T')[0] : '',
             note: raw.note,
@@ -221,5 +221,9 @@ export class DetailComponent implements OnInit {
 
     reset(): void {
         this.form.reset();
+    }
+
+    getEnumKeyFromValue(enumObj: any, value: string): string {
+        return Object.keys(enumObj).find(key => enumObj[key] === value) || value;
     }
 }

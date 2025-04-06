@@ -20,7 +20,7 @@
                                     'bi bi-playstation': loc === 'PLAYSTATION',
                                     'bi bi-xbox': loc === 'XBOX',
                                     'bi bi-nintendo-switch': loc === 'NINTENDO_CONSOLE',
-                                    'bi bi-hash': loc !== 'STEAM' && loc !== 'PLAYSTATION' && loc !== 'XBOX' && loc !== 'NINTENDO_CONSOLE'
+                                    'bi bi-disc': loc !== 'STEAM' && loc !== 'PLAYSTATION' && loc !== 'XBOX' && loc !== 'NINTENDO_CONSOLE'
                                 }"
                             ></i>
                         </ng-container>
@@ -36,7 +36,21 @@
 
             <!-- Score in top-right corner -->
             <span *ngIf="getTotalScore() !== null" class="absolute top-4 right-3 text-[1.5rem] font-extrabold leading-none flex items-center gap-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                <!-- 🔥 Replay icon always shown if replay -->
                 <i
+                    *ngIf="gameRecord?.replay === 1"
+                    class="bi bi-fire text-[1.25rem] mr-1 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(0,0,0,0.3)]"
+                    [ngStyle]="{
+                        background: isTierScore(getTotalScore()) ? getTierGradient(getTotalScore()) : 'var(--primary-color)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+                    }"
+                    title="Replayed"
+                ></i>
+
+                <!-- ✨ Stars only for tier scores -->
+                <i
+                    *ngIf="isTierScore(getTotalScore())"
                     class="bi bi-stars text-[1.4rem] inline-block align-middle bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(0,0,0,0.3)]"
                     [ngStyle]="{
                         background: getTierGradient(getTotalScore()),
@@ -45,6 +59,7 @@
                     }"
                 ></i>
 
+                <!-- Score value -->
                 <span
                     *ngIf="isTierScore(getTotalScore()); else normalScore"
                     class="bg-clip-text text-transparent"
@@ -58,7 +73,7 @@
                 </span>
 
                 <ng-template #normalScore>
-                    <span>
+                    <span class="text-[1.5rem] font-extrabold leading-none">
                         {{ getTotalScore() }}
                     </span>
                 </ng-template>
@@ -67,7 +82,7 @@
             <ng-template #subtitle></ng-template>
 
             <div class="flex px-1 mt-1 mb-1 text-white text-sm items-start">
-                <!-- Left: Date + Story + Replay -->
+                <!-- Left: Date + Story -->
                 <div class="flex flex-col gap-1.5 w-1/2">
                     <div class="flex items-center gap-2">
                         <i class="pi pi-calendar text-primary"></i>
@@ -78,13 +93,6 @@
                         @if (gameRecord?.mainQuestDone === 1) {
                             <i class="pi pi-check-square text-primary"></i>
                             <span>Story completed</span>
-                        }
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        @if (gameRecord?.replay === 1) {
-                            <i class="pi pi-replay text-primary"></i>
-                            <span>Replay</span>
                         }
                     </div>
                 </div>

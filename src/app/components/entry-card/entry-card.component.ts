@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { GameRecord } from '../../models/record.model';
-import { DatePipe, NgClass, NgIf, NgStyle, NgSwitch, NgSwitchDefault } from '@angular/common';
+import { DatePipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { RecordType } from '../../enum/type.enum';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-entry-card',
-    imports: [CardModule, NgIf, DatePipe, NgStyle, NgSwitch, NgSwitchDefault, NgClass],
+    imports: [CardModule, NgIf, DatePipe, NgStyle, NgClass],
     templateUrl: './entry-card.component.html',
     styleUrl: './entry-card.component.scss'
 })
@@ -60,10 +60,5 @@ export class EntryCardComponent {
                 queryParams: { record: this.gameRecord.id }
             });
         }
-    }
-
-    formatDate(): string {
-        const date = this.gameRecord?.finishDate;
-        return '';
     }
 }
