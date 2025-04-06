@@ -8,11 +8,13 @@ import { LayoutService } from '../service/layout.service';
 import { DataService } from '../../service/data.service';
 import { LoginService } from '../../service/login.service';
 import { ToastModule } from 'primeng/toast';
+import { Dialog } from 'primeng/dialog';
+
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, ToastModule],
+    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, ToastModule, Dialog],
     templateUrl: 'app.topbar.html'
 })
 export class AppTopbar {
@@ -22,6 +24,12 @@ export class AppTopbar {
         private loginService: LoginService,
         private router: Router
     ) {}
+
+    showLegend = false;
+
+    openLegend(): void {
+        this.showLegend = true;
+    }
 
     openOverview() {
         this.router.navigate(['/overview']);
