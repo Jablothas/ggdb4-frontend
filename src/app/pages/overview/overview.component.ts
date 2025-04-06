@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { CardModule } from 'primeng/card';
-import { EntryComponent } from '../../components/entry/entry.component';
+import { EntryCardComponent } from '../../components/entry-card/entry-card.component';
 import { YearlyLineBreakComponent } from '../../components/yearly-line-break/yearly-line-break.component';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,7 +17,7 @@ interface GameRecordGroup {
 @Component({
     selector: 'app-overview',
     standalone: true,
-    imports: [CommonModule, CardModule, EntryComponent, YearlyLineBreakComponent],
+    imports: [CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent],
     templateUrl: './overview.component.html'
 })
 export class OverviewComponent implements OnInit {
