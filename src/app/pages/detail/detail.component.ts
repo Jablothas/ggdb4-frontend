@@ -94,7 +94,7 @@ export class DetailComponent implements OnInit {
             name: [record?.name ?? '', Validators.required],
             status: [record?.status ?? ''],
             type: [record?.type ?? '', Validators.required],
-            location: [record?.location ?? '', Validators.required],
+            location: [record?.location ? Locations[record.location as keyof typeof Locations] : '', Validators.required],
             createDate: [record?.createDate ? new Date(record.createDate) : ''],
             finishDate: [record?.finishDate ? new Date(record.finishDate) : '', Validators.required],
             note: [record?.note ?? ''],
@@ -161,7 +161,7 @@ export class DetailComponent implements OnInit {
             name: raw.name,
             status: raw.status,
             type: raw.type,
-            location: raw.location,
+            location: this.getEnumKeyFromValue(Locations, raw.location),
             createDate: raw.createDate ? new Date(raw.createDate).toISOString().split('T')[0] : '',
             finishDate: raw.finishDate ? new Date(raw.finishDate).toISOString().split('T')[0] : '',
             note: raw.note,
@@ -197,7 +197,7 @@ export class DetailComponent implements OnInit {
 
     confirmDelete(): void {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete this entry?',
+            message: 'Are you sure you want to delete this entry-card?',
             header: 'Confirm Deletion',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -221,5 +221,13 @@ export class DetailComponent implements OnInit {
 
     reset(): void {
         this.form.reset();
+    }
+
+    getEnumKeyFromValue(enumObj: any, value: string): string {
+        return Object.keys(enumObj).find(key => enumObj[key] === value) || value;
+    }
+
+    returnToOverview() {
+        this.router.navigate(['/overview'], {})
     }
 }

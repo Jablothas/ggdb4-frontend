@@ -1,15 +1,12 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
     <ng-container *ngFor="let item of groupedGameRecords">
-
         <ng-container *ngIf="item.year !== null">
             <div class="col-span-full">
-                <app-yearly-line-break
-                    [year]="item.year"
-                    [count]="item.yearCount">
-                </app-yearly-line-break>
+                <app-yearly-line-break [year]="item.year" [count]="item.yearCount"> </app-yearly-line-break>
             </div>
         </ng-container>
 
-        <app-entry class="h-full" [gameRecord]="item.gameRecord"></app-entry>
+        <app-entry-card class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
     </ng-container>
 </div>
+<div><br /><br /><br /></div>
