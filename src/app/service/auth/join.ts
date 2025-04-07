@@ -1,26 +1,27 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { DataService } from '../data.service';
+import { MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
-    selector: 'app-login',
+    selector: 'app-join',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator],
+    imports: [InputTextModule, PasswordModule, ButtonModule, RippleModule, FormsModule, AppFloatingConfigurator, Toast],
     template: `
+        <p-toast position="top-right" [style]="{ top: '50px' }" [breakpoints]="{ '600px': { top: '70px' } }" styleClass="z-[1100] right-6" />
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
             <div class="flex flex-col items-center justify-center">
                 <div>
                     <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-200" style="border-radius: 53px">
                         <div class="text-center mb-8">
-                            <!-- Logo + Title -->
                             <svg id="Ebene_2" class="w-[45%] mx-auto" data-name="Ebene 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260.69 260.69">
                                 <defs>
                                     <style>
@@ -60,18 +61,22 @@ import { DataService } from '../data.service';
                                 </g>
                             </svg>
                             <br />
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4"><span class="font-bold size-4">GoodGamesDB</span></div>
-                            <span class="text-muted-color font-medium">Sign in to continue</span>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">
+                                <span class="font-bold size-4">GoodGamesDB</span>
+                            </div>
+                            <span class="text-muted-color font-medium">Create your account</span>
                         </div>
 
                         <div>
-                            <input pInputText id="user" type="text" placeholder="Username" class="w-full md:w-[30rem] mb-4" [(ngModel)]="email" />
-
-                            <p-password id="password1" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" styleClass="w-full mb-8" [fluid]="true" [feedback]="false"> </p-password>
-
-                            <p-button label="Sign In" styleClass="w-full mb-4" (onClick)="login()"> </p-button>
-
-                            <p-button label="Get beta access" styleClass="w-full p-button-secondary" (onClick)="join()"> </p-button>
+                            <div>
+                                <div class="flex flex-col items-center justify-center">
+                                    <input pInputText type="text" placeholder="Username" class="w-full md:w-[30rem] mb-4" [(ngModel)]="username" />
+                                    <input pInputText type="email" placeholder="Email" class="w-full md:w-[30rem] mb-4" [(ngModel)]="email" />
+                                    <input pInputText type="text" placeholder="Access Token" class="w-full md:w-[30rem] mb-4" [(ngModel)]="token" />
+                                    <p-password id="password" [(ngModel)]="password" placeholder="Password" [toggleMask]="true" [feedback]="false" [fluid]="true" styleClass="w-full md:w-[30rem] mb-8"> </p-password>
+                                    <p-button label="Join now!" styleClass="w-full md:w-[30rem]" (onClick)="register()" [disabled]="isSubmitting"></p-button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -79,29 +84,103 @@ import { DataService } from '../data.service';
         </div>
     `
 })
-export class Login {
-    email: string = '';
-    password: string = '';
+export class JoinComponent {
+    username = '';
+    password = '';
+    token = '';
+    email = '';
+    isSubmitting = false;
 
     constructor(
         private dataService: DataService,
-        private router: Router
+        private router: Router,
+        private toast: MessageService
     ) {}
 
-    login(): void {
-        const user = { username: this.email, pwd: this.password };
+    register(): void {
+        if (this.isSubmitting) return;
 
-        this.dataService.login(user).subscribe((res: { success: boolean; sessionId?: string; message?: string }) => {
-            if (res.success) {
-                this.router.navigateByUrl('/');
-            } else {
-                console.warn('Login failed');
-                // You could show a message here with Toast or PrimeNG Message
+        const trimmedUsername = this.username.trim().toLowerCase();
+        const trimmedEmail = this.email.trim();
+        const trimmedPassword = this.password;
+
+        if (!trimmedUsername) {
+            this.toast.add({
+                severity: 'warn',
+                summary: 'Invalid username',
+                detail: 'Please enter a username.',
+                life: 3000
+            });
+            return;
+        }
+
+        if (!trimmedEmail || !this.validateEmail(trimmedEmail)) {
+            this.toast.add({
+                severity: 'warn',
+                summary: 'Invalid email',
+                detail: 'Please enter a valid email address.',
+                life: 3000
+            });
+            return;
+        }
+
+        if (!trimmedPassword || trimmedPassword.length < 8) {
+            this.toast.add({
+                severity: 'warn',
+                summary: 'Weak password',
+                detail: 'Password must be at least 8 characters long.',
+                life: 3000
+            });
+            return;
+        }
+
+        if (!this.token) {
+            this.toast.add({
+                severity: 'warn',
+                summary: 'Invalid token',
+                detail: 'Please enter a valid token.',
+                life: 3000
+            });
+            return;
+        }
+
+        const user = {
+            username: trimmedUsername,
+            pwd: trimmedPassword,
+            token: this.token,
+            email: trimmedEmail
+        };
+
+        this.isSubmitting = true;
+
+        this.dataService.register(user).subscribe({
+            next: (res) => {
+                if (res.success) {
+                    this.toast.add({
+                        severity: 'success',
+                        summary: 'Registration successful',
+                        detail: res.message || 'You can now log in.',
+                        life: 3000
+                    });
+                    setTimeout(() => this.router.navigate(['/auth/login']), 3000);
+                } else {
+                    this.isSubmitting = false;
+                }
+            },
+            error: () => {
+                this.isSubmitting = false;
+                this.toast.add({
+                    severity: 'error',
+                    summary: 'Registration failed',
+                    detail: 'A network error occurred. Please try again.',
+                    life: 3000
+                });
             }
         });
     }
 
-    join(): void {
-        this.router.navigateByUrl('/auth/join');
+    private validateEmail(email: string): boolean {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 }

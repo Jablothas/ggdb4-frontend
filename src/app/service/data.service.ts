@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class DataService {
     private apiUrl = 'https://api.ggdb.app/request';
+    private joinUrl = 'https://api.ggdb.app/join';
     private records: GameRecord[] = [];
     private sessionId: string | null = null;
     private username: string | null = null;
@@ -139,6 +140,24 @@ export class DataService {
             }),
             catchError(error => {
                 this.toast.error('Delete failed', 'Something went wrong while deleting.');
+                return of({ success: false });
+            })
+        );
+    }
+
+    register(user: { username: string; pwd: string; email: string }): Observable<any> {
+        const url = `${this.joinUrl}?create=new`;
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+        return this.http.post<any>(url, JSON.stringify(user), { headers, withCredentials: true }).pipe(
+            tap(res => {
+                if (!res.success) {
+                    this.toast.error('Registration failed', res.message || 'Unknown error');
+                }
+            }),
+            catchError(error => {
+                const backendMessage = error?.error?.error || 'An error occurred during registration.';
+                this.toast.error('Registration failed', backendMessage);
                 return of({ success: false });
             })
         );
