@@ -69,7 +69,19 @@ export class Dashboard implements OnInit {
     }
 
     private calculateTotalScore(record: GameRecord): number {
-        return record.scoreGameplay + record.scorePresentation + record.scoreNarrative + record.scoreQuality + record.scoreSound + record.scoreContent + record.scorePacing + record.scoreBalance + record.scoreUIUX + record.scoreImpression;
+        const scores = [
+            record.scoreGameplay,
+            record.scorePresentation,
+            record.scoreNarrative,
+            record.scoreQuality,
+            record.scoreSound,
+            record.scoreContent,
+            record.scorePacing,
+            record.scoreBalance,
+            record.scoreUIUX,
+            record.scoreImpression
+        ];
+        return scores.reduce((total, score) => total + (score === 0 ? 10 : score), 0);
     }
 }
 
