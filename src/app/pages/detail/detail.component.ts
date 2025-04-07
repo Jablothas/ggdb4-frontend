@@ -40,7 +40,7 @@ export class DetailComponent implements OnInit {
 
     scoreFieldComments: Record<string, string> = {
         scoreGameplay: 'How engaging and responsive was the core gameplay loop?',
-        scorePresentation: 'Visuals, animations, polish and overall first impression.',
+        scorePresentation: 'Visuals, animations, polish and overall impression.',
         scoreNarrative: 'Storytelling, writing, characters, and world-building.',
         scoreQuality: 'Stability, bug-free experience, and polish level.',
         scoreSound: 'Music, sound effects, and audio design.',
@@ -48,7 +48,7 @@ export class DetailComponent implements OnInit {
         scorePacing: 'Flow of progression and timing of major beats.',
         scoreBalance: 'Difficulty tuning and fair challenge.',
         scoreUIUX: 'Menus, HUD, and overall usability.',
-        scoreImpression: 'Your gut feeling. Would you recommend it?'
+        scoreImpression: 'Your overall impression.'
     };
 
     replayValueOptions = [
@@ -224,10 +224,10 @@ export class DetailComponent implements OnInit {
     }
 
     getEnumKeyFromValue(enumObj: any, value: string): string {
-        return Object.keys(enumObj).find(key => enumObj[key] === value) || value;
+        return Object.keys(enumObj).find((key) => enumObj[key] === value) || value;
     }
 
     returnToOverview() {
-        this.router.navigate(['/overview'], {})
+        this.router.navigate(['/overview'], {});
     }
 }
