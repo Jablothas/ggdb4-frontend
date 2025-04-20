@@ -40,7 +40,7 @@
                     </g>
                 </g>
             </svg>
-            <span class="text-primary font-bold">GoodGamesDB</span><span style="font-size: 1rem; margin-top: 1px" class="font-bold">4.0 Beta</span>
+            <span class="text-primary font-bold">GoodGamesDB</span><span style="font-size: 1rem; margin-top: 1px" class="font-bold">4.0.1</span>
         </a>
     </div>
 
@@ -68,10 +68,10 @@
 <!--                    <i class="pi pi-eye"></i>-->
 <!--                    <span>Filter</span>-->
 <!--                </button>-->
-                <button type="button" class="layout-topbar-action" (click)="openLegend()">
-                    <i class="pi pi-info-circle"></i>
-                    <span>Legend</span>
-                </button>
+<!--                <button type="button" class="layout-topbar-action" (click)="openLegend()">-->
+<!--                    <i class="pi pi-info-circle"></i>-->
+<!--                    <span>Legend</span>-->
+<!--                </button>-->
                 <button class="layout-topbar-action layout-topbar-action-highlight" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
                     <i class="pi pi-palette"></i>
                 </button>
@@ -84,80 +84,3 @@
         </div>
     </div>
 </div>
-<p-dialog header="Icon Legend" [(visible)]="showLegend" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
-    <div class="flex flex-col gap-4 text-sm">
-        <!-- Platforms -->
-        <div>
-            <h3 class="text-base font-semibold mb-2">Platforms</h3>
-            <div class="grid grid-cols-2 gap-y-2">
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-steam text-primary"></i>
-                    <span>Steam</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-playstation text-primary"></i>
-                    <span>PlayStation</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-xbox text-primary"></i>
-                    <span>Xbox</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-nintendo-switch text-primary"></i>
-                    <span>Nintendo Console</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-disc text-primary"></i>
-                    <span>Other location (no icon available)</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Completion Icons -->
-        <div>
-            <h3 class="text-base font-semibold mb-2">Game Progress</h3>
-            <div class="flex flex-col gap-2">
-                <div class="flex items-center gap-2">
-                    <i class="pi pi-calendar text-primary"></i>
-                    <span><strong>Date:</strong> Month and year the game was finished.</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="pi pi-check-square text-primary"></i>
-                    <span><strong>Story completed:</strong> The main quest, story, or campaign is finished.</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <i class="pi pi-clipboard text-primary"></i>
-                    <span><strong>Note:</strong> Custom note with personal info or highlights.</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Replay Icon -->
-        <div>
-            <h3 class="text-base font-semibold mb-2">Replay</h3>
-            <div class="flex items-center gap-2">
-                <i class="bi bi-fire text-green-400"></i>
-                <span><strong>Replay:</strong> The game was played again after completion.</span>
-            </div>
-        </div>
-
-        <!-- Score Explanation -->
-        <div>
-            <h3 class="text-base font-semibold mb-2">Score & Tiers</h3>
-            <div class="flex flex-col gap-2">
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-stars text-yellow-400"></i>
-                    <span><strong>Tier Score:</strong> Shown when total score is 85 or higher.</span>
-                </div>
-                <div>
-                    <ul class="list-disc list-inside ml-6">
-                        <li><strong>85–89:</strong> Bronze tier</li>
-                        <li><strong>90–94:</strong> Silver tier</li>
-                        <li><strong>95–100:</strong> Gold tier</li>
-                    </ul>
-                    <p class="mt-1 text-gray-400 text-xs">The score is scaled from 1–10 ratings per category and normalized to a 10–100 scale.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</p-dialog>

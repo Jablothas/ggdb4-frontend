@@ -7,6 +7,13 @@ import { YearlyLineBreakComponent } from '../../components/yearly-line-break/yea
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../service/toast.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Toolbar } from 'primeng/toolbar';
+import { InputText } from 'primeng/inputtext';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { Dialog } from 'primeng/dialog';
+import { Button } from 'primeng/button';
 
 interface GameRecordGroup {
     year: number | null;
@@ -17,7 +24,7 @@ interface GameRecordGroup {
 @Component({
     selector: 'app-overview',
     standalone: true,
-    imports: [CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent],
+    imports: [CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent, FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon, Dialog, Button],
     templateUrl: './overview.component.html'
 })
 export class OverviewComponent implements OnInit {
@@ -27,6 +34,17 @@ export class OverviewComponent implements OnInit {
     private readonly router = inject(Router);
 
     groupedGameRecords: GameRecordGroup[] = [];
+    allRecords: GameRecord[] = [];
+    showLegend = false;
+    private _searchTerm = '';
+
+    get searchTerm(): string {
+        return this._searchTerm;
+    }
+    set searchTerm(value: string) {
+        this._searchTerm = value;
+        this.filterRecords();
+    }
 
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
@@ -67,10 +85,32 @@ export class OverviewComponent implements OnInit {
         const username = this.dataService.loginService.getUsername();
         if (!username) return;
 
-        this.dataService.getAllRecords(username).subscribe(records => {
+        this.dataService.getAllRecords(username).subscribe((records) => {
             records.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
+            this.allRecords = records;
             this.groupedGameRecords = this.groupRecordsByYear(records);
         });
+    }
+
+    onSearchEnter(): void {
+        const term = this.searchTerm.trim().toLowerCase();
+        if (term.length === 0) {
+            this.groupedGameRecords = this.groupRecordsByYear(this.allRecords);
+            return;
+        }
+        const filtered = this.allRecords.filter((record) => record.name.toLowerCase().includes(term));
+        this.groupedGameRecords = this.groupRecordsByYear(filtered);
+    }
+
+    filterRecords(): void {
+        const term = this._searchTerm.trim().toLowerCase();
+        const filtered = term.length === 0
+            ? this.allRecords
+            : this.allRecords.filter((record) =>
+                record.name.toLowerCase().includes(term)
+            );
+
+        this.groupedGameRecords = this.groupRecordsByYear(filtered);
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {

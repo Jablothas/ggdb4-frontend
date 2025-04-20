@@ -8,13 +8,12 @@ import { LayoutService } from '../service/layout.service';
 import { DataService } from '../../service/data.service';
 import { LoginService } from '../../service/login.service';
 import { ToastModule } from 'primeng/toast';
-import { Dialog } from 'primeng/dialog';
 
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, ToastModule, Dialog],
+    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, ToastModule],
     templateUrl: 'app.topbar.html'
 })
 export class AppTopbar {

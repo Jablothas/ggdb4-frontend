@@ -10,7 +10,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 @Component({
     selector: 'app-layout',
     standalone: true,
-    imports: [CommonModule, AppTopbar, RouterModule, AppFooter, ConfirmDialog],
+    imports: [CommonModule, AppTopbar, RouterModule, ConfirmDialog],
     template: `
         <div class="layout-wrapper" [ngClass]="containerClass">
             <app-topbar></app-topbar>
@@ -19,7 +19,6 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
                 <div class="layout-main">
                     <router-outlet></router-outlet>
                 </div>
-                <app-footer></app-footer>
             </div>
             <div class="layout-mask animate-fadein"></div>
         </div>
