@@ -1,0 +1,20 @@
+[
+    {
+        "version": "4.0.1",
+        "date": "2025-04-20",
+        "changes": [
+            "Color settings will be saved",
+            "Added toolbar to the entry overview",
+            "Added search functionallity to the entry overview",
+            "Moved info popup to the new toolbar",
+            "Added patchnotes functionallity"
+        ]
+    },
+    {
+        "version": "4.0.0",
+        "date": "2025-04-01",
+        "changes": [
+            "Released as private beta"
+        ]
+    }
+]

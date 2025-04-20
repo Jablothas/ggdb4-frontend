@@ -2,3 +2,30 @@
 @use './tailwind.css';
 @use './assets/layout/layout.scss';
 @use 'primeicons/primeicons.css';
+
+.layout-wrapper {
+    overflow: hidden !important;
+}
+
+.layout-main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden !important;
+}
+
+.layout-main {
+    flex: 1 1 auto;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+
+.layout-main::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+::ng-deep .p-button .pi-comments {
+    font-size: 2rem !important;
+}
