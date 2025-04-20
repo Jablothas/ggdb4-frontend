@@ -8,17 +8,31 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { DataService } from '../data.service';
+import { Dialog } from 'primeng/dialog';
+import { NgForOf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, Dialog, NgForOf],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
             <div class="flex flex-col items-center justify-center">
                 <div>
-                    <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-200" style="border-radius: 53px">
+                    <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-200" relative style="border-radius: 53px">
+                        <div class="absolute top-4 right-4">
+                            <button
+                                pButton
+                                icon="pi pi-receipt"
+                                class="p-button-rounded p-button-text text-[2rem]"
+                                pTooltip="Patchnotes"
+                                tooltipPosition="left"
+                                pButtonLabel=""
+                                (click)="showPatchnotes = true"
+                            >Patchnotes</button>
+                        </div>
                         <div class="text-center mb-8">
                             <!-- Logo + Title -->
                             <svg id="Ebene_2" class="w-[45%] mx-auto" data-name="Ebene 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260.69 260.69">
@@ -77,16 +91,40 @@ import { DataService } from '../data.service';
                 </div>
             </div>
         </div>
+        <p-dialog header="Patchnotes" [(visible)]="showPatchnotes" [modal]="true" [style]="{ width: '30rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
+            <div class="flex flex-col gap-4 text-sm">
+                <div *ngFor="let note of patchnotes">
+                    <div class="text-base font-semibold">
+                        {{ note.version }} <span class="text-muted text-xs">({{ note.date }})</span>
+                    </div>
+                    <ul class="list-disc list-inside ml-4 mt-1">
+                        <li *ngFor="let item of note.changes">{{ item }}</li>
+                    </ul>
+                </div>
+            </div>
+        </p-dialog>
     `
 })
 export class Login {
     email: string = '';
     password: string = '';
+    showPatchnotes = false;
+    patchnotes: { version: string; date: string; changes: string[] }[] = [];
 
     constructor(
         private dataService: DataService,
-        private router: Router
-    ) {}
+        private router: Router,
+        private http: HttpClient
+    ) {
+        this.loadPatchnotes();
+    }
+
+    loadPatchnotes() {
+        this.http.get<any[]>('assets/patchnotes.json').subscribe({
+            next: (data) => (this.patchnotes = data),
+            error: (err) => console.error('Failed to load patchnotes:', err)
+        });
+    }
 
     login(): void {
         const user = { username: this.email, pwd: this.password };
