@@ -113,6 +113,12 @@ export class OverviewComponent implements OnInit {
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
     }
 
+    openAdd(): void {
+        this.router.navigate(['/detail'], {
+            queryParams: { record: 'new' }
+        });
+    }
+
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
         const result: GameRecordGroup[] = [];
         let lastYear: number | null = null;

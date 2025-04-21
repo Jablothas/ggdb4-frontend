@@ -9,7 +9,6 @@ import { DataService } from '../../service/data.service';
 import { LoginService } from '../../service/login.service';
 import { ToastModule } from 'primeng/toast';
 
-
 @Component({
     selector: 'app-topbar',
     standalone: true,
@@ -24,20 +23,12 @@ export class AppTopbar {
         private router: Router
     ) {}
 
-    showLegend = false;
-
-    openLegend(): void {
-        this.showLegend = true;
+    isActive(path: string): boolean {
+        return this.router.url === path;
     }
 
     openOverview() {
         this.router.navigate(['/overview']);
-    }
-
-    openAdd(): void {
-        this.router.navigate(['/detail'], {
-            queryParams: { record: 'new' }
-        });
     }
 
     openDashboard(): void {

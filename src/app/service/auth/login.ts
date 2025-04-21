@@ -27,11 +27,11 @@ import { HttpClient } from '@angular/common/http';
                                 pButton
                                 icon="pi pi-receipt"
                                 class="p-button-rounded p-button-text text-[2rem]"
-                                pTooltip="Patchnotes"
+                                pTooltip="Patch Notes"
                                 tooltipPosition="left"
                                 pButtonLabel=""
                                 (click)="showPatchnotes = true"
-                            >Patchnotes</button>
+                            >Patch Notes</button>
                         </div>
                         <div class="text-center mb-8">
                             <!-- Logo + Title -->
@@ -91,7 +91,7 @@ import { HttpClient } from '@angular/common/http';
                 </div>
             </div>
         </div>
-        <p-dialog header="Patchnotes" [(visible)]="showPatchnotes" [modal]="true" [style]="{ width: '30rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
+        <p-dialog header="Patchnotes" [(visible)]="showPatchnotes" [modal]="true" [style]="{ width: '45rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
             <div class="flex flex-col gap-4 text-sm">
                 <div *ngFor="let note of patchnotes">
                     <div class="text-base font-semibold">

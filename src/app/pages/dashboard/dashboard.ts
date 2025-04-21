@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model'
 import { GameCompletionChartComponent } from '../../components/game-completion-chart/game-completion-chart.component';
+import { StatService } from '../../service/stat.service';
 
 @Component({
     selector: 'app-dashboard',
     standalone: true,
+    providers: [StatService],
     imports: [CommonModule, GameCompletionChartComponent],
     templateUrl: 'dashboard.html'
 })
 export class Dashboard implements OnInit {
+    statService: StatService = inject(StatService);
     username: string = '';
     records: GameRecord[] = [];
     bestGame: { name: string, score: number } | null = null;
@@ -54,7 +57,7 @@ export class Dashboard implements OnInit {
         let bestGames: GameRecord[] = [];
 
         for (const record of this.records) {
-            const totalScore = this.calculateTotalScore(record);
+            const totalScore = this.statService.getTotalScore(record);
 
             if (totalScore > maxScore) {
                 maxScore = totalScore;
@@ -63,25 +66,10 @@ export class Dashboard implements OnInit {
                 bestGames.push(record);
             }
         }
+
         bestGames.sort((a, b) => new Date(b.finishDate).getTime() - new Date(a.finishDate).getTime());
         const bestGame = bestGames[0];
-        return { name: bestGame?.name || '', score: this.calculateTotalScore(bestGame) };
-    }
-
-    private calculateTotalScore(record: GameRecord): number {
-        const scores = [
-            record.scoreGameplay,
-            record.scorePresentation,
-            record.scoreNarrative,
-            record.scoreQuality,
-            record.scoreSound,
-            record.scoreContent,
-            record.scorePacing,
-            record.scoreBalance,
-            record.scoreUIUX,
-            record.scoreImpression
-        ];
-        return scores.reduce((total, score) => total + (score === 0 ? 10 : score), 0);
+        return { name: bestGame?.name || '', score: this.statService.getTotalScore(bestGame) };
     }
 }
 
