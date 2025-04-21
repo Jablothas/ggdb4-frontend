@@ -21,15 +21,19 @@ import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { ToastService } from '../../service/toast.service';
 import { ConfirmationService } from 'primeng/api';
+import { StatService } from '../../service/stat.service';
+import { Toolbar } from 'primeng/toolbar';
 
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, RadioButton],
+    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, RadioButton, Toolbar],
+    providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
 })
 export class DetailComponent implements OnInit {
+    statService: StatService = inject(StatService);
     form!: FormGroup;
     formEditable = false;
     dataService = inject(DataService);
@@ -125,17 +129,12 @@ export class DetailComponent implements OnInit {
     }
 
     get totalScore(): number {
-        const scores = this.scoreFields.map((field) => {
-            const isEnabled = this.form.get(`${field}Enabled`)?.value;
-            const value = this.form.get(field)?.value;
-            return isEnabled ? value : 10; // Treat disabled scores as 10
-        });
-
-        const total = scores.reduce((a, b) => a + b, 0);
-        const max = this.scoreFields.length * 10;
-        const scaled = ((total - this.scoreFields.length) / (max - this.scoreFields.length)) * 90 + 10;
-
-        return Math.round(scaled);
+        const rawRecord: GameRecord = {
+            ...this.form.value,
+            mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
+            replay: this.form.value.replay ? 1 : 0
+        };
+        return this.statService.getTotalScore(rawRecord);
     }
 
     toggleEdit(): void {

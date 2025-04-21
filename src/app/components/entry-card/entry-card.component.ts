@@ -1,34 +1,34 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input, SimpleChanges } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { GameRecord } from '../../models/record.model';
 import { DatePipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { RecordType } from '../../enum/type.enum';
 import { Router } from '@angular/router';
+import { StatService } from '../../service/stat.service';
 
 @Component({
     selector: 'app-entry-card',
     imports: [CardModule, NgIf, DatePipe, NgStyle, NgClass],
+    providers: [StatService],
     templateUrl: './entry-card.component.html',
     styleUrl: './entry-card.component.scss'
 })
 export class EntryCardComponent {
     @Input() gameRecord: GameRecord | undefined;
+    router: Router = inject(Router)
+    statService: StatService = inject(StatService);
+    score: number = 0;
 
-    constructor(private router: Router) {}
+    constructor() {}
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['gameRecord'] && this.gameRecord) {
+            this.score = this.statService.getTotalScore(this.gameRecord);
+        }
+    }
 
     getRecordTypeLabel(type: keyof typeof RecordType | undefined): string {
         return type && type !== 'FULL' ? RecordType[type] : '';
-    }
-
-    getTotalScore(): number {
-        if (!this.gameRecord) return 0;
-
-        const scores = ['scoreGameplay', 'scorePresentation', 'scoreNarrative', 'scoreQuality', 'scoreSound', 'scoreContent', 'scorePacing', 'scoreBalance', 'scoreUIUX', 'scoreImpression'] as const;
-
-        return scores.reduce((sum, key) => {
-            const value = this.gameRecord![key] ?? 0;
-            return sum + (value === 0 ? 10 : value);
-        }, 0);
     }
 
     isTierScore(score: number): boolean {

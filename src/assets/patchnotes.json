@@ -1,13 +1,22 @@
 [
     {
+        "version": "4.0.2",
+        "date": "2025-04-21",
+        "changes": [
+            "Score system adjusted: reachedPoints / (countedCategories * 10) * 100",
+            "Added toolbar to detail view for unified design",
+            "Several design improvements"
+        ]
+    },
+    {
         "version": "4.0.1",
         "date": "2025-04-20",
         "changes": [
             "Color settings will be saved",
             "Added toolbar to the entry overview",
-            "Added search functionallity to the entry overview",
+            "Added search functionality to the entry overview",
             "Moved info popup to the new toolbar",
-            "Added patchnotes functionallity"
+            "Added patch notes functionality"
         ]
     },
     {

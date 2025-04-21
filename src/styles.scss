@@ -29,3 +29,8 @@
 ::ng-deep .p-button .pi-comments {
     font-size: 2rem !important;
 }
+
+.p-toolbar.override-toolbar-margin {
+    margin-bottom: 2rem !important;
+    background-color: red !important; // test only
+}

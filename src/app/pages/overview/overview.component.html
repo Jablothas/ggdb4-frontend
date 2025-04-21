@@ -1,43 +1,38 @@
-<p-toolbar class="mb-4">
-    <!-- Left side (start) -->
-    <ng-template pTemplate="start">
-        <div class="flex items-center gap-2">
-            <p-button
-                icon="pi pi-info-circle"
-                pTooltip="Icon Legend"
-                tooltipPosition="top"
-                (click)="showLegend = true"
-            ></p-button>
-        </div>
-    </ng-template>
-
-    <!-- Right side (end) -->
-    <ng-template pTemplate="end">
-        <div class="flex items-center gap-2">
-            <p-iconfield>
-                <p-inputicon styleClass="pi pi-search" />
-                <input
-                    type="text"
-                    pInputText
-                    placeholder="Search games..."
-                    [(ngModel)]="searchTerm"
-                    (keydown.enter)="onSearchEnter()"
-                    class="w-80"
-                />
-            </p-iconfield>
-        </div>
-    </ng-template>
-</p-toolbar>
-<div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    <ng-container *ngFor="let item of groupedGameRecords">
-        <ng-container *ngIf="item.year !== null">
-            <div class="col-span-full">
-                <app-yearly-line-break [year]="item.year" [count]="item.yearCount"> </app-yearly-line-break>
+<div class="p-4">
+    <p-toolbar class="mb-4">
+        <!-- Left side (start) -->
+        <ng-template pTemplate="start">
+            <div class="flex items-center gap-2">
+                <!-- Add Button -->
+                <p-button icon="pi pi-plus-circle" label="Add" (click)="openAdd()"></p-button>
+                <!-- Filter Button -->
+                <p-button icon="pi pi-eye-slash" label="Filter" severity="secondary"  [disabled]="true"></p-button>
+                <!-- Info Button -->
+                <p-button icon="pi pi-info-circle" label="Info" severity="secondary" (click)="showLegend = true"></p-button>
             </div>
-        </ng-container>
+        </ng-template>
 
-        <app-entry-card class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
-    </ng-container>
+        <!-- Right side (end) -->
+        <ng-template pTemplate="end">
+            <div class="flex items-center gap-2">
+                <p-iconfield>
+                    <p-inputicon styleClass="pi pi-search" />
+                    <input type="text" pInputText placeholder="Search games..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-80" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+    </p-toolbar>
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <ng-container *ngFor="let item of groupedGameRecords">
+            <ng-container *ngIf="item.year !== null">
+                <div class="col-span-full">
+                    <app-yearly-line-break [year]="item.year" [count]="item.yearCount"> </app-yearly-line-break>
+                </div>
+            </ng-container>
+
+            <app-entry-card class="h-full" [gameRecord]="item.gameRecord"></app-entry-card>
+        </ng-container>
+    </div>
 </div>
 <div><br /><br /><br /></div>
 <p-dialog header="Icon Legend" [(visible)]="showLegend" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false" [closable]="true" [dismissableMask]="true">
