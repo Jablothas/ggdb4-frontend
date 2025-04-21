@@ -34,3 +34,11 @@
     margin-bottom: 2rem !important;
     background-color: red !important; // test only
 }
+
+:root {
+    --progressbar-bg: var(--primary-color);
+}
+
+::ng-deep .p-progressbar .p-progressbar-value {
+    background-color: var(--primary-color) !important;
+}

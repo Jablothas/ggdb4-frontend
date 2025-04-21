@@ -14,6 +14,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
+import { LoadingService } from '../../service/loading.service';
 
 interface GameRecordGroup {
     year: number | null;
@@ -32,6 +33,7 @@ export class OverviewComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly toast = inject(ToastService);
     private readonly router = inject(Router);
+    private readonly loadingService = inject(LoadingService);
 
     groupedGameRecords: GameRecordGroup[] = [];
     allRecords: GameRecord[] = [];
@@ -41,6 +43,7 @@ export class OverviewComponent implements OnInit {
     get searchTerm(): string {
         return this._searchTerm;
     }
+
     set searchTerm(value: string) {
         this._searchTerm = value;
         this.filterRecords();

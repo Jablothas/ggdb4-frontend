@@ -7,6 +7,7 @@ import { User } from '../models/user.model';
 import { GameRecord } from '../models/record.model';
 import { ToastService } from './toast.service';
 import { Router } from '@angular/router';
+import { LoadingService } from './loading.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,12 +18,14 @@ export class DataService {
     private records: GameRecord[] = [];
     private sessionId: string | null = null;
     private username: string | null = null;
+    private recordsLoaded = false;
 
     constructor(
         private http: HttpClient,
         public loginService: LoginService,
         private toast: ToastService,
-        private router: Router
+        private router: Router,
+        private loadingService: LoadingService
     ) {}
 
     login(user: User): Observable<any> {
@@ -71,17 +74,18 @@ export class DataService {
     }
 
     getAllRecords(username: string): Observable<GameRecord[]> {
+        if (this.recordsLoaded && this.records.length > 0) {
+            return of(this.records);
+        }
         const url = `${this.apiUrl}?action=read&username=${username.toLowerCase()}`;
-
         return this.http.get<GameRecord[]>(url, {
             withCredentials: true
         }).pipe(
             tap(records => {
                 this.records = records;
+                this.recordsLoaded = true;
             }),
-            catchError(error => {
-                return of([]);
-            })
+            catchError(() => of([]))
         );
     }
 
@@ -98,7 +102,7 @@ export class DataService {
             withCredentials: true
         }).pipe(
             tap(() => {
-                // No toast here — handled by Overview via queryParams
+                this.recordsLoaded = false; // Invalidate cache
             }),
             catchError(error => {
                 this.toast.error('Create failed', 'Something went wrong while saving.');
@@ -116,7 +120,7 @@ export class DataService {
             withCredentials: true
         }).pipe(
             tap(() => {
-                // No toast here — handled by Overview via queryParams
+                this.recordsLoaded = false; // Invalidate cache
             }),
             catchError(error => {
                 this.toast.error('Update failed', 'Something went wrong while updating.');
@@ -136,7 +140,7 @@ export class DataService {
             withCredentials: true
         }).pipe(
             tap(() => {
-                // No toast here — handled by Overview via queryParams
+                this.recordsLoaded = false; // Invalidate cache
             }),
             catchError(error => {
                 this.toast.error('Delete failed', 'Something went wrong while deleting.');
@@ -176,5 +180,10 @@ export class DataService {
                 return of({ success: false });
             })
         );
+    }
+
+    forceRefreshRecords(username: string): Observable<GameRecord[]> {
+        this.recordsLoaded = false;
+        return this.getAllRecords(username);
     }
 }

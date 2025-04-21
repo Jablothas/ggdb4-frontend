@@ -1,5 +1,5 @@
 <p-toast position="top-right" [style]="{ top: '50px' }" [breakpoints]="{ '600px': { top: '70px' } }" styleClass="z-[1100] right-6" />
-<div class="layout-topbar">
+<div class="layout-topbar relative">
     <div class="layout-topbar-logo-container">
         <a class="layout-topbar-logo" routerLink="/">
             <svg id="Ebene_2" data-name="Ebene 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260.69 260.69">
@@ -71,4 +71,17 @@
             </div>
         </div>
     </div>
+    <p-progressBar
+        *ngIf="isLoading$ | async"
+        mode="indeterminate"
+        styleClass="!h-1 !m-0 !rounded-none"
+        [style]="{
+        position: 'absolute',
+        top: '100%',
+        left: '0',
+        width: '100%',
+        zIndex: 20
+    }"
+    />
 </div>
+
