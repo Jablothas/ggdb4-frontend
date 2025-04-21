@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { delay, finalize, Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { LoginService } from './login.service';
 import { User } from '../models/user.model';
 import { GameRecord } from '../models/record.model';
 import { ToastService } from './toast.service';
 import { Router } from '@angular/router';
+import { LoadingService } from './loading.service';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,8 @@ export class DataService {
         private http: HttpClient,
         public loginService: LoginService,
         private toast: ToastService,
-        private router: Router
+        private router: Router,
+        private loadingService: LoadingService
     ) {}
 
     login(user: User): Observable<any> {
@@ -73,15 +75,14 @@ export class DataService {
     getAllRecords(username: string): Observable<GameRecord[]> {
         const url = `${this.apiUrl}?action=read&username=${username.toLowerCase()}`;
 
+        this.loadingService.startLoading();
+
         return this.http.get<GameRecord[]>(url, {
             withCredentials: true
         }).pipe(
-            tap(records => {
-                this.records = records;
-            }),
-            catchError(error => {
-                return of([]);
-            })
+            tap(records => this.records = records),
+            finalize(() => this.loadingService.stopLoading()),
+            catchError(error => of([]))
         );
     }
 
