@@ -19,7 +19,7 @@
                                 [ngClass]="{
                                     'bi bi-steam': loc === 'STEAM',
                                     'bi bi-playstation': loc === 'PLAYSTATION',
-                                    'bi bi-xbox': loc === 'XBOX',
+                                    'bi bi-xbox': loc === 'XBOX' || loc === 'XBOX_GAME_PASS',
                                     'bi bi-nintendo-switch': loc === 'NINTENDO_CONSOLE',
                                     'bi bi-disc': loc !== 'STEAM' && loc !== 'PLAYSTATION' && loc !== 'XBOX' && loc !== 'NINTENDO_CONSOLE'
                                 }"
