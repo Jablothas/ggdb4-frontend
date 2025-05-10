@@ -1,5 +1,12 @@
 [
     {
+        "version": "4.0.4",
+        "date": "2025-04-21",
+        "changes": [
+            "Added several new locations for retro platforms"
+        ]
+    },
+    {
         "version": "4.0.2",
         "date": "2025-04-21",
         "changes": [
