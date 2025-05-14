@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model';
 import { CardModule } from 'primeng/card';
@@ -13,31 +13,43 @@ import { InputText } from 'primeng/inputtext';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Dialog } from 'primeng/dialog';
-import { Button } from 'primeng/button';
+import { Button, ButtonDirective } from 'primeng/button';
 import { LoadingService } from '../../service/loading.service';
+import { Table, TableModule } from 'primeng/table';
+import { DataDisplayService } from '../../service/data-display.service';
 
 interface GameRecordGroup {
     year: number | null;
     yearCount: number | null;
     gameRecord: GameRecord;
+    id: number;
 }
 
 @Component({
     selector: 'app-overview',
     standalone: true,
-    imports: [CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent, FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon, Dialog, Button],
+    imports: [
+        CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
+        FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon,
+        Dialog, Button, TableModule
+    ],
     templateUrl: './overview.component.html'
 })
 export class OverviewComponent implements OnInit {
+    @ViewChild('dt') table!: Table;
+
     private readonly dataService = inject(DataService);
     private readonly route = inject(ActivatedRoute);
     private readonly toast = inject(ToastService);
     private readonly router = inject(Router);
     private readonly loadingService = inject(LoadingService);
+    readonly dataDisplay = inject(DataDisplayService);
 
     groupedGameRecords: GameRecordGroup[] = [];
     allRecords: GameRecord[] = [];
     showLegend = false;
+    displayMode: 'Cards' | 'Table' = 'Cards';
+    expandedRows: { [id: number]: boolean } = {};
     private _searchTerm = '';
 
     get searchTerm(): string {
@@ -50,6 +62,9 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        // Initialize expandedRows as an empty object
+        this.expandedRows = {};
+
         this.route.queryParams.subscribe((params) => {
             const toastType = params['toast'];
             const gameName = params['game'];
@@ -70,15 +85,10 @@ export class OverviewComponent implements OnInit {
                 }
 
                 if (message) {
-                    setTimeout(() => {
-                        this.toast.success(summary, message);
-                    }, 0);
+                    setTimeout(() => this.toast.success(summary, message), 0);
 
                     this.router.navigate([], {
-                        queryParams: {
-                            toast: null,
-                            game: null
-                        },
+                        queryParams: { toast: null, game: null },
                         queryParamsHandling: 'merge'
                     });
                 }
@@ -93,15 +103,18 @@ export class OverviewComponent implements OnInit {
             this.allRecords = records;
             this.groupedGameRecords = this.groupRecordsByYear(records);
         });
+
+        const savedMode = localStorage.getItem('ggdb_display_mode');
+        if (savedMode === 'Table' || savedMode === 'Cards') {
+            this.displayMode = savedMode;
+        }
     }
 
     onSearchEnter(): void {
         const term = this.searchTerm.trim().toLowerCase();
-        if (term.length === 0) {
-            this.groupedGameRecords = this.groupRecordsByYear(this.allRecords);
-            return;
-        }
-        const filtered = this.allRecords.filter((record) => record.name.toLowerCase().includes(term));
+        const filtered = term.length === 0
+            ? this.allRecords
+            : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
     }
 
@@ -109,32 +122,23 @@ export class OverviewComponent implements OnInit {
         const term = this._searchTerm.trim().toLowerCase();
         const filtered = term.length === 0
             ? this.allRecords
-            : this.allRecords.filter((record) =>
-                record.name.toLowerCase().includes(term)
-            );
-
+            : this.allRecords.filter((r) => r.name.toLowerCase().includes(term));
         this.groupedGameRecords = this.groupRecordsByYear(filtered);
     }
 
     openAdd(): void {
-        this.router.navigate(['/detail'], {
-            queryParams: { record: 'new' }
-        });
+        this.router.navigate(['/detail'], { queryParams: { record: 'new' } });
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
         const result: GameRecordGroup[] = [];
         let lastYear: number | null = null;
 
-        // Count how many entries exist per year
-        const counts = records.reduce(
-            (map, record) => {
-                const year = new Date(record.finishDate).getFullYear();
-                map[year] = (map[year] || 0) + 1;
-                return map;
-            },
-            {} as Record<number, number>
-        );
+        const counts = records.reduce((map, record) => {
+            const year = new Date(record.finishDate).getFullYear();
+            map[year] = (map[year] || 0) + 1;
+            return map;
+        }, {} as Record<number, number>);
 
         for (const record of records) {
             const year = new Date(record.finishDate).getFullYear();
@@ -143,12 +147,24 @@ export class OverviewComponent implements OnInit {
             result.push({
                 year: insertSplitter ? year : null,
                 gameRecord: record,
-                yearCount: insertSplitter ? counts[year] : null
+                yearCount: insertSplitter ? counts[year] : null,
+                id: record.id
             });
 
             lastYear = year;
         }
 
         return result;
+    }
+
+    setDisplayMode(mode: 'Cards' | 'Table') {
+        this.displayMode = mode;
+        localStorage.setItem('ggdb_display_mode', mode);
+    }
+
+    goToDetail(record: GameRecord): void {
+        this.router.navigate(['/detail'], {
+            queryParams: { record: record.id }
+        });
     }
 }

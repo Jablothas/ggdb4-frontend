@@ -9,7 +9,7 @@ export enum Locations {
     GOG = 'GOG',
     N64 = 'Nintendo 64',
     NINTENDO_3DS = 'New Nintendo 3DS',
-    NINTENDO_CONSOLE = 'Nintendo Switch Console',
+    NINTENDO_CONSOLE = 'Nintendo Switch',
     NINTENDO_DS = 'Nintendo DS',
     NES = 'Nintendo Entertainment System',
     OTHER = 'Other',
