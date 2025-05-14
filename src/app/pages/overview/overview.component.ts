@@ -31,7 +31,7 @@ interface GameRecordGroup {
     imports: [
         CommonModule, CardModule, EntryCardComponent, YearlyLineBreakComponent,
         FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon,
-        Dialog, Button, TableModule, ButtonDirective
+        Dialog, Button, TableModule
     ],
     templateUrl: './overview.component.html'
 })
@@ -103,6 +103,11 @@ export class OverviewComponent implements OnInit {
             this.allRecords = records;
             this.groupedGameRecords = this.groupRecordsByYear(records);
         });
+
+        const savedMode = localStorage.getItem('ggdb_display_mode');
+        if (savedMode === 'Table' || savedMode === 'Cards') {
+            this.displayMode = savedMode;
+        }
     }
 
     onSearchEnter(): void {
@@ -123,49 +128,6 @@ export class OverviewComponent implements OnInit {
 
     openAdd(): void {
         this.router.navigate(['/detail'], { queryParams: { record: 'new' } });
-    }
-
-    onRowExpand(event: any): void {
-        console.log('Row expanded:', event.data);
-        if (event.data) {
-            this.expandedRows[event.data.id] = true;
-        }
-    }
-
-    onRowCollapse(event: any): void {
-        console.log('Row collapsed:', event.data);
-        if (event.data) {
-            delete this.expandedRows[event.data.id];
-        }
-    }
-
-    expandAll(): void {
-        this.expandedRows = this.groupedGameRecords.reduce((acc: { [id: number]: boolean }, group) => {
-            acc[group.id] = true;
-            return acc;
-        }, {});
-    }
-
-    collapseAll(): void {
-        this.expandedRows = {};
-    }
-
-    toggleRow(group: GameRecordGroup): void {
-        if (this.expandedRows[group.id]) {
-            delete this.expandedRows[group.id];
-        } else {
-            this.expandedRows[group.id] = true;
-        }
-        this.expandedRows = {...this.expandedRows};
-
-        // Force the table to update
-        if (this.table) {
-            this.table.toggleRow(group);
-        }
-    }
-
-    getGroupById(id: number): GameRecordGroup | undefined {
-        return this.groupedGameRecords.find(g => g.id === id);
     }
 
     private groupRecordsByYear(records: GameRecord[]): GameRecordGroup[] {
@@ -193,5 +155,16 @@ export class OverviewComponent implements OnInit {
         }
 
         return result;
+    }
+
+    setDisplayMode(mode: 'Cards' | 'Table') {
+        this.displayMode = mode;
+        localStorage.setItem('ggdb_display_mode', mode);
+    }
+
+    goToDetail(record: GameRecord): void {
+        this.router.navigate(['/detail'], {
+            queryParams: { record: record.id }
+        });
     }
 }
