@@ -1,4 +1,4 @@
-<div class="p-4">
+<div class="p-4" [ngClass]="{'no-scroll': displayMode === 'Table'}">
     <p-toolbar class="mb-4">
         <ng-template pTemplate="start">
             <div class="flex items-center gap-2">
@@ -35,7 +35,7 @@
     </ng-container>
 
     <ng-template #tableView>
-        <div class="mt-8" style="scrollbar-width: none;">
+        <div class="table-container mt-8">
             <p-table
                 #dt
                 [value]="groupedGameRecords"

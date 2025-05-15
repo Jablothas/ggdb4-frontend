@@ -3,4 +3,50 @@
     top: 0;
     z-index: 2;
     background: var(--surface-a); /* or your desired bg color */
+    height: 60px;
+    border-bottom: 2px solid var(--p-primary-color);
+    font-weight: bold;
+}
+
+.table-container {
+    height: calc(100vh - 220px); /* Adjust based on your topbar height and padding */
+    overflow: hidden;
+    border-bottom: 2px solid var(--p-primary-color);
+}
+
+.table-container .p-datatable {
+    height: 100%;
+}
+
+/* Hide scrollbar for the table container but allow scrolling */
+.table-container::-webkit-scrollbar {
+    display: none;
+}
+
+.table-container {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Custom scrollbar for the table */
+::ng-deep .custom-scroll .p-datatable-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+::ng-deep .custom-scroll .p-datatable-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+::ng-deep .custom-scroll .p-datatable-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+::ng-deep .custom-scroll .p-datatable-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Hide parent scrollbar when in table view */
+.no-scroll {
+    overflow: hidden !important;
 }
