@@ -1,4 +1,4 @@
-<div class="p-4 max-h-[calc(100vh-9rem)] overflow-hidden">
+<div class="p-4">
     <p-toolbar class="mb-4">
         <ng-template pTemplate="start">
             <div class="flex items-center gap-2">
@@ -35,15 +35,13 @@
     </ng-container>
 
     <ng-template #tableView>
-        <div class="mt-8 overflow-y-auto custom-scrollbar" style="scrollbar-width: none;">
+        <div class="mt-8" style="scrollbar-width: none;">
             <p-table
                 #dt
                 [value]="groupedGameRecords"
                 dataKey="id"
-                [rowHover]="true"
-                [responsiveLayout]="'scroll'"
-                [scrollable]="true"
-                scrollHeight="calc(100vh - 180px)"
+                scrollable="true"
+                scrollHeight="flex"
                 styleClass="custom-scroll sticky-header"
             >
                 <ng-template pTemplate="header">
@@ -62,7 +60,7 @@
                         </td>
                     </tr>
 
-                    <tr (click)="goToDetail(group.gameRecord)" class="cursor-pointer hover:bg-surface-100 transition-colors">
+                    <tr (click)="goToDetail(group.gameRecord)" class="cursor-pointer hover:brightness-125 transition-colors">
                         <td class="text-right pr-3">
                             <span class="flex items-center justify-end gap-2 text-[1.25rem] font-extrabold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
                                 <i

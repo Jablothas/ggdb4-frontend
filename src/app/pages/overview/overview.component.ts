@@ -33,7 +33,8 @@ interface GameRecordGroup {
         FormsModule, Toolbar, InputText, ReactiveFormsModule, IconField, InputIcon,
         Dialog, Button, TableModule
     ],
-    templateUrl: './overview.component.html'
+    templateUrl: './overview.component.html',
+    styleUrl: './overview.component.scss'
 })
 export class OverviewComponent implements OnInit {
     @ViewChild('dt') table!: Table;
