@@ -36,22 +36,26 @@
             </ng-template>
 
             <!-- Score in top-right corner -->
-            <span *ngIf="score !== null" class="absolute top-4 right-3 text-[1.5rem] font-extrabold leading-none flex items-center gap-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+            <span
+                *ngIf="score !== null"
+                class="absolute top-4 right-3 text-[1.5rem] font-extrabold leading-none flex items-center gap-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+            >
                 <i
                     *ngIf="gameRecord?.replay === 1"
                     class="bi bi-fire text-[1.25rem] mr-1 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(0,0,0,0.3)]"
                     [ngStyle]="{
-                        background: isTierScore(score) ? getTierGradient(score) : 'var(--primary-color)',
+                        background: display.isTierScore(score) ? display.getTierGradient(score) : 'var(--primary-color)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent'
                     }"
                     title="Replayed"
                 ></i>
+
                 <i
-                    *ngIf="isTierScore(score)"
+                    *ngIf="display.isTierScore(score)"
                     class="bi bi-stars text-[1.4rem] inline-block align-middle bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(0,0,0,0.3)]"
                     [ngStyle]="{
-                        background: getTierGradient(score),
+                        background: display.getTierGradient(score),
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent'
                     }"
@@ -59,10 +63,10 @@
 
                 <!-- Score value -->
                 <span
-                    *ngIf="isTierScore(score); else normalScore"
+                    *ngIf="display.isTierScore(score); else normalScore"
                     class="bg-clip-text text-transparent"
                     [ngStyle]="{
-                        background: getTierGradient(score),
+                        background: display.getTierGradient(score),
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent'
                     }"
@@ -87,22 +91,18 @@
                         <span>{{ gameRecord?.finishDate | date: 'MMMM yyyy' }}</span>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        @if (gameRecord?.mainQuestDone === 1) {
-                            <i class="pi pi-check-square text-primary"></i>
-                            <span>Story completed</span>
-                        }
+                    <div class="flex items-center gap-2" *ngIf="gameRecord?.mainQuestDone === 1">
+                        <i class="pi pi-check-square text-primary"></i>
+                        <span>Story completed</span>
                     </div>
                 </div>
 
                 <!-- Right: Note -->
-                <div class="flex items-start gap-1.5 flex-1 ml-6 mt-1">
-                    @if (gameRecord?.note && gameRecord?.note != 'nan') {
-                        <i class="pi pi-clipboard text-primary mt-1"></i>
-                        <span class="whitespace-pre-wrap break-words leading-snug">
-                            {{ gameRecord?.note }}
-                        </span>
-                    }
+                <div class="flex items-start gap-1.5 flex-1 ml-6 mt-1" *ngIf="gameRecord?.note && gameRecord?.note !== 'nan'">
+                    <i class="pi pi-clipboard text-primary mt-1"></i>
+                    <span class="whitespace-pre-wrap break-words leading-snug">
+                        {{ gameRecord?.note }}
+                    </span>
                 </div>
             </div>
         </p-card>
