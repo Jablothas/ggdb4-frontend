@@ -13,10 +13,11 @@ import { InputText } from 'primeng/inputtext';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Dialog } from 'primeng/dialog';
-import { Button, ButtonDirective } from 'primeng/button';
+import { Button } from 'primeng/button';
 import { LoadingService } from '../../service/loading.service';
 import { Table, TableModule } from 'primeng/table';
 import { DataDisplayService } from '../../service/data-display.service';
+import { RecordType } from '../../enum/type.enum';
 
 interface GameRecordGroup {
     year: number | null;
@@ -51,7 +52,12 @@ export class OverviewComponent implements OnInit {
     showLegend = false;
     displayMode: 'Cards' | 'Table' = 'Cards';
     expandedRows: { [id: number]: boolean } = {};
+
     private _searchTerm = '';
+
+    resolveTypeLabel(type: keyof typeof RecordType): string {
+        return RecordType[type] ?? type;
+    }
 
     get searchTerm(): string {
         return this._searchTerm;

@@ -1,4 +1,4 @@
-<div class="p-4" [ngClass]="{'no-scroll': displayMode === 'Table'}">
+<div class="p-4" [ngClass]="{ 'no-scroll': displayMode === 'Table' }">
     <p-toolbar class="mb-4">
         <ng-template pTemplate="start">
             <div class="flex items-center gap-2">
@@ -36,27 +36,24 @@
 
     <ng-template #tableView>
         <div class="table-container mt-8">
-            <p-table
-                #dt
-                [value]="groupedGameRecords"
-                dataKey="id"
-                scrollable="true"
-                scrollHeight="flex"
-                styleClass="custom-scroll sticky-header"
-            >
+            <p-table #dt [value]="groupedGameRecords" dataKey="id" scrollable="true" scrollHeight="flex" styleClass="custom-scroll sticky-header">
                 <ng-template pTemplate="header">
-                    <tr class="text-sm border-b border-surface-400/30">
-                        <th class="w-[60px] py-3 text-right">Score</th>
-                        <th class="py-3">Name</th>
-                        <th class="w-[150px] py-3 text-nowrap">Finished</th>
-                        <th class="w-[300px] py-3">Platform</th>
+                    <tr class="text-lg font-bold">
+                        <th class="w-[60px] py-3 text-right text-primary">Score</th>
+                        <th class="py-3 text-primary">Name</th>
+                        <th class="w-[150px] py-3 text-nowrap text-primary">Finished</th>
+                        <th class="w-[300px] py-3 text-primary">Platform</th>
+                        <th class="w-[200px] py-3 text-primary">Type</th>
+                        <th class="w-[50px] py-3 text-nowrap text-primary">MQ</th>
+                        <th class="w-[50px] py-3 text-nowrap text-primary">Replay</th>
                     </tr>
                 </ng-template>
 
                 <ng-template pTemplate="body" let-group>
                     <tr *ngIf="group.year !== null">
-                        <td colspan="4" class="h-[3.25rem] px-3 bg-primary/10 text-primary font-semibold">
+                        <td colspan="7" class="h-[1.25rem] text-lg px-3 bg-primary/10 text-primary font-semibold">
                             {{ group.year }}
+                            <span class="ml-[35px]">{{ group.yearCount }} games finished</span>
                         </td>
                     </tr>
 
@@ -94,12 +91,34 @@
                         </td>
 
                         <td>{{ group.gameRecord.name }}</td>
-                        <td>{{ group.gameRecord.finishDate | date: 'MMM yyyy' }}</td>
+                        <td>{{ group.gameRecord.finishDate | date: 'MMMM yyyy' }}</td>
                         <td>
                             <span class="flex items-center gap-2">
                                 <i [ngClass]="dataDisplay.getPlatformIconClass(group.gameRecord.location)" class="text-primary"></i>
                                 {{ dataDisplay.getPlatformLabel(group.gameRecord.location) }}
                             </span>
+                        </td>
+                        <td>
+                            <span class="flex items-center gap-2">
+                                {{ resolveTypeLabel(group.gameRecord.type) }}
+                            </span>
+                        </td>
+                        <td>
+                            <i
+                                *ngIf="group.gameRecord.mainQuestDone === 1; else notDone"
+                                class="pi pi-check-circle text-primary"
+                                title="MQ"
+                            ></i>
+                            <ng-template #notDone>
+                                <i class="pi pi-times-circle text-red-400" title="Story not completed"></i>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <i
+                                *ngIf="group.gameRecord.replay"
+                                class="pi pi-check-circle text-primary"
+                                title="Replay"
+                            ></i>
                         </td>
                     </tr>
                 </ng-template>
