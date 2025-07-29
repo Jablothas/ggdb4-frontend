@@ -9,13 +9,13 @@ import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { DataService } from '../data.service';
 import { Dialog } from 'primeng/dialog';
-import { NgForOf } from '@angular/common';
+import { NgForOf, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, Dialog, NgForOf],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RippleModule, AppFloatingConfigurator, Dialog, NgForOf, CommonModule],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
@@ -86,6 +86,10 @@ import { HttpClient } from '@angular/common/http';
                             <p-button label="Sign In" styleClass="w-full mb-4" (onClick)="login()"> </p-button>
 
                             <p-button label="Get beta access" styleClass="w-full p-button-secondary" (onClick)="join()"> </p-button>
+
+                            <div *ngIf="loginError" class="mt-2 text-center text-red-500 text-sm">
+                                Login failed!
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,7 +99,7 @@ import { HttpClient } from '@angular/common/http';
             <div class="flex flex-col gap-4 text-sm">
                 <div *ngFor="let note of patchnotes">
                     <div class="text-base font-semibold">
-                        {{ note.version }} <span class="text-muted text-xs">({{ note.date }})</span>
+                        {{ note.version }} <span class="text-muted-color text-xs ml-3">{{ formatDate(note.date) }}</span>
                     </div>
                     <ul class="list-disc list-inside ml-4 mt-1">
                         <li *ngFor="let item of note.changes">{{ item }}</li>
@@ -109,6 +113,7 @@ export class Login {
     email: string = '';
     password: string = '';
     showPatchnotes = false;
+    loginError = false;
     patchnotes: { version: string; date: string; changes: string[] }[] = [];
 
     constructor(
@@ -128,18 +133,32 @@ export class Login {
 
     login(): void {
         const user = { username: this.email, pwd: this.password };
+        this.loginError = false; // Reset error state
 
-        this.dataService.login(user).subscribe((res: { success: boolean; sessionId?: string; message?: string }) => {
-            if (res.success) {
-                this.router.navigateByUrl('/');
-            } else {
-                console.warn('Login failed');
-                // You could show a message here with Toast or PrimeNG Message
+        this.dataService.login(user).subscribe({
+            next: (res: { success: boolean; sessionId?: string; message?: string }) => {
+                if (res.success) {
+                    this.router.navigateByUrl('/');
+                } else {
+                    this.loginError = true;
+                }
+            },
+            error: (err) => {
+                console.error('Login error:', err);
+                this.loginError = true;
             }
         });
     }
 
     join(): void {
         this.router.navigateByUrl('/auth/join');
+    }
+
+    formatDate(dateString: string): string {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleDateString('en-US', { month: 'long' });
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
     }
 }
