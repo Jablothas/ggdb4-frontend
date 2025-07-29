@@ -53,6 +53,19 @@
                     (click)="toggleEdit()"
                 ></button>
 
+                <!-- Copy to Clipboard -->
+                <button
+                    *ngIf="!formEditable && form.get('id')?.value"
+                    pButton
+                    type="button"
+                    [icon]="isGeneratingCard ? 'pi pi-spin pi-spinner' : 'pi pi-copy'"
+                    class="p-button-secondary"
+                    pTooltip="{{ isGeneratingCard ? 'Generating card...' : 'Copy card to clipboard' }}"
+                    tooltipPosition="top"
+                    (click)="copyCardToClipboard()"
+                    [disabled]="isGeneratingCard"
+                ></button>
+
                 <!-- Save Changes -->
                 <button
                     *ngIf="formEditable && form.get('id')?.value"
