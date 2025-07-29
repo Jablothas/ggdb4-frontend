@@ -1,4 +1,11 @@
 [
+        {
+        "version": "4.2.1",
+        "date": "2025-07-29",
+        "changes": [
+            "Added copy to clipboard functionality for game records"
+        ]
+    },
     {
         "version": "4.2.0",
         "date": "2025-07-29",
