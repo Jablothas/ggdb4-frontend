@@ -53,8 +53,8 @@ export class ClipboardService {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
 
-        const width = 450;
-        const height = 320;
+        const width = 500;
+        const height = 250;
 
         const devicePixelRatio = window.devicePixelRatio || 1;
 
@@ -69,18 +69,19 @@ export class ClipboardService {
         const primaryColor = this.getPrimaryColor();
         const surfaceColors = this.getSurfaceColors();
 
-        const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, surfaceColors.dark);
-        gradient.addColorStop(1, surfaceColors.darker);
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = surfaceColors.dark;
         ctx.fillRect(0, 0, width, height);
+
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
 
         ctx.fillStyle = primaryColor;
         ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'left';
         const title = record.name || 'Unknown Game';
 
-        const maxTitleWidth = 380;
+        const maxTitleWidth = 400;
         let displayTitle = title;
         const titleMetrics = ctx.measureText(title);
         if (titleMetrics.width > maxTitleWidth) {
@@ -90,7 +91,7 @@ export class ClipboardService {
             displayTitle += '...';
         }
 
-        ctx.fillText(displayTitle, 20, 35);
+        ctx.fillText(displayTitle, 30, 40);
 
         ctx.font = 'bold 36px system-ui, -apple-system, sans-serif';
 
@@ -106,11 +107,9 @@ export class ClipboardService {
         }
 
         ctx.fillStyle = scoreColor;
-        ctx.textAlign = 'left';
+        ctx.textAlign = 'right';
 
-        ctx.fillText(totalScore.toString(), 20, 85);
-
-        ctx.font = '14px system-ui, -apple-system, sans-serif';
+        ctx.fillText(totalScore.toString(), width - 30, 50);        ctx.font = '14px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#d1d5db';
         ctx.textAlign = 'left';
 
@@ -127,11 +126,11 @@ export class ClipboardService {
             { key: 'scoreImpression', label: 'Impression' }
         ];
 
-        const rightAreaStartX = 180;
+        const rightAreaStartX = 30;
         const col1X = rightAreaStartX;
-        const col2X = rightAreaStartX + 130;
-        let startY = 60;
-        const rowHeight = 20;
+        const col2X = rightAreaStartX + 150;
+        let startY = 70;
+        const rowHeight = 18;
 
         allScoreFields.forEach((field, index) => {
             const score = record[field.key as keyof GameRecord] as number || 0;
@@ -146,7 +145,7 @@ export class ClipboardService {
             if (score === 0) {
                 ctx.fillStyle = '#6b7280';
                 ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-                ctx.fillText('-', x + 80, currentY);
+                ctx.fillText('-', x + 100, currentY);
             } else {
                 let scoreColor: string;
                 if (score >= 8) {
@@ -161,7 +160,7 @@ export class ClipboardService {
 
                 ctx.fillStyle = scoreColor;
                 ctx.font = 'bold 14px system-ui, -apple-system, sans-serif';
-                ctx.fillText(score.toString(), x + 80, currentY);
+                ctx.fillText(score.toString(), x + 100, currentY);
             }
         });
 
@@ -172,14 +171,14 @@ export class ClipboardService {
         ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#9ca3af';
         ctx.textAlign = 'left';
-        ctx.fillText('Replay Value:', 20, height - 120);
+        ctx.fillText('Replay Value:', 30, height - 80);
 
         ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(replayLabel, 20, height - 105);
+        ctx.fillText(replayLabel, 30, height - 65);
 
-        const progressBarX = 20;
-        const progressBarY = height - 95;
+        const progressBarX = 30;
+        const progressBarY = height - 55;
         const progressBarWidth = 120;
         const progressBarHeight = 6;
 
@@ -194,38 +193,35 @@ export class ClipboardService {
         ctx.fillStyle = progressColor;
         ctx.fillRect(progressBarX, progressBarY, fillWidth, progressBarHeight);
 
-        let checkmarkY = height - 120;
-
-        if (record.mainQuestDone === 1) {
-            ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = primaryColor;
-            ctx.textAlign = 'left';
-            ctx.fillText('✓ Main Quest Done', 180, checkmarkY);
-        }
-
-        if (record.replay === 1) {
-            const replayY = record.mainQuestDone === 1 ? checkmarkY + 15 : checkmarkY;
-            ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-            ctx.fillStyle = primaryColor;
-            ctx.textAlign = 'left';
-            ctx.fillText('✓ Replayed', 180, replayY);
-        }
-
         if (record.finishDate) {
             const finishDate = new Date(record.finishDate);
-            const dateString = finishDate.toLocaleDateString('de-DE');
+            const dateString = finishDate.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+
+            let footerText = dateString;
+
+            if (record.mainQuestDone === 1) {
+                footerText += ' | Main Quest finished';
+            }
+
+            if (record.replay === 1) {
+                footerText += ' | Replay';
+            }
 
             ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
             ctx.fillStyle = '#6b7280';
             ctx.textAlign = 'left';
-            ctx.fillText(`finished on ${dateString}`, 20, height - 15);
+            ctx.fillText(footerText, 30, height - 15);
         }
 
         const version = this.versionService.getVersion();
         ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#4b5563';
         ctx.textAlign = 'right';
-        ctx.fillText(`GG.DB ${version}`, width - 20, height - 15);
+        ctx.fillText(`GG.DB ${version}`, width - 30, height - 15);
 
         return canvas;
     }
