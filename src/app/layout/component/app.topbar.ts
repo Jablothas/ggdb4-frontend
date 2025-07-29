@@ -10,6 +10,7 @@ import { LoginService } from '../../service/login.service';
 import { ToastModule } from 'primeng/toast';
 import { LoadingService } from '../../service/loading.service';
 import { ProgressBar } from 'primeng/progressbar';
+import { VersionService } from '../../service/version.service';
 
 @Component({
     selector: 'app-topbar',
@@ -19,15 +20,18 @@ import { ProgressBar } from 'primeng/progressbar';
 })
 export class AppTopbar {
     isLoading$;
+    version: string;
 
     constructor(
         public layoutService: LayoutService,
         private dataService: DataService,
         private loginService: LoginService,
         private router: Router,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
+        private versionService: VersionService
     ) {
         this.isLoading$ = this.loadingService.loading$;
+        this.version = this.versionService.getVersion();
     }
 
     ngOnInit() {

@@ -4,6 +4,7 @@ import { DataService } from '../../service/data.service';
 import { GameRecord } from '../../models/record.model'
 import { GameCompletionChartComponent } from '../../components/game-completion-chart/game-completion-chart.component';
 import { StatService } from '../../service/stat.service';
+import { VersionService } from '../../service/version.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -17,8 +18,14 @@ export class Dashboard implements OnInit {
     username: string = '';
     records: GameRecord[] = [];
     bestGame: { name: string, score: number } | null = null;
+    version: string;
 
-    constructor(private dataService: DataService) {}
+    constructor(
+        private dataService: DataService,
+        private versionService: VersionService
+    ) {
+        this.version = this.versionService.getVersion();
+    }
 
     ngOnInit(): void {
         this.username = this.dataService.getUsername();
