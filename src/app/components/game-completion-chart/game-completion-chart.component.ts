@@ -33,7 +33,7 @@ export class GameCompletionChartComponent implements OnChanges {
                     label: 'Games Finished',
                     backgroundColor: documentStyle.getPropertyValue('--p-primary-400'),
                     data: Object.values(recordsPerYear),
-                    barThickness: 32
+                    barThickness: 90
                 }
             ]
         };
@@ -56,7 +56,9 @@ export class GameCompletionChartComponent implements OnChanges {
                     grid: {
                         color: 'transparent',
                         borderColor: 'transparent'
-                    }
+                    },
+                    categoryPercentage: 0.9,
+                    barPercentage: 0.8
                 },
                 y: {
                     ticks: {
@@ -74,21 +76,22 @@ export class GameCompletionChartComponent implements OnChanges {
 
     private getRecordsPerYear(): { [year: string]: number } {
         const yearCounts: { [year: string]: number } = {};
-        let minYear = Number.POSITIVE_INFINITY;
-        let maxYear = Number.NEGATIVE_INFINITY;
 
         for (const record of this.records) {
             const year = new Date(record.finishDate).getFullYear();
             yearCounts[year] = (yearCounts[year] || 0) + 1;
-
-            if (year < minYear) minYear = year;
-            if (year > maxYear) maxYear = year;
-        }
-        const completeYearCounts: { [year: string]: number } = {};
-        for (let year = minYear; year <= maxYear; year++) {
-            completeYearCounts[year.toString()] = yearCounts[year] || 0;
         }
 
-        return completeYearCounts;
+        // Only return years that have at least 1 record
+        const filteredYearCounts: { [year: string]: number } = {};
+        Object.keys(yearCounts)
+            .sort((a, b) => parseInt(a) - parseInt(b))
+            .forEach(year => {
+                if (yearCounts[year] > 0) {
+                    filteredYearCounts[year] = yearCounts[year];
+                }
+            });
+
+        return filteredYearCounts;
     }
 }

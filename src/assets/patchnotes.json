@@ -1,5 +1,14 @@
 [
     {
+        "version": "4.2.0",
+        "date": "2025-07-29",
+        "changes": [
+            "Added profile settings to its own page as first part of new user settings",
+            "Added more diverse stats: current year average rating, previous year average rating, year with highest average rating, latest highest rated game with improved formatting",
+            "Improved backend communication"
+        ]
+    },
+    {
         "version": "4.1.1",
         "date": "2025-05-15",
         "changes": [

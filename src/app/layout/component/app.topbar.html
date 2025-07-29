@@ -40,18 +40,14 @@
                     </g>
                 </g>
             </svg>
-            <span class="text-primary font-bold">GoodGamesDB</span><span style="font-size: 1rem; margin-top: 1px" class="font-bold">4.1.1</span>
+            <span class="text-primary font-bold">GoodGamesDB</span><span style="font-size: 1rem; margin-top: 1px" class="font-bold">{{ version }}</span>
         </a>
     </div>
 
     <div class="layout-topbar-actions">
-        <div class="layout-config-menu">
-            <div class="relative">
-                <app-configurator />
-            </div>
-        </div>
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
+                <span class="text-muted-color text-sm flex items-center px-3 py-2 font-bold">Logged in as &nbsp;<span style="color: var(--primary-color)">{{ username }}</span></span>
                 <button type="button" class="layout-topbar-action" (click)="openDashboard()">
                     <i class="pi pi-home"></i>
                     <span>Home</span>
@@ -60,10 +56,10 @@
                     <i class="pi pi-database"></i>
                     <span>Entries</span>
                 </button>
-                <button class="layout-topbar-action layout-topbar-action-highlight" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
-                    <i class="pi pi-palette"></i>
+                <button type="button" class="layout-topbar-action" (click)="openProfile()">
+                    <i class="pi pi-user"></i>
+                    <span>Profile</span>
                 </button>
-                <app-configurator />
                 <button type="button" class="layout-topbar-action" (click)="logout()">
                     <i class="pi pi-power-off"></i>
                     <span>Logout</span>
