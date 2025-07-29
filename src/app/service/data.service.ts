@@ -73,6 +73,18 @@ export class DataService {
         return this.username ?? '';
     }
 
+    getCurrentUser(username: string): Observable<any> {
+        const url = `${this.apiUrl}?action=current-user&username=${username.toLowerCase()}`;
+        return this.http.get<any>(url, {
+            withCredentials: true
+        }).pipe(
+            catchError(error => {
+                console.error('Failed to get current user:', error);
+                return of({ success: false });
+            })
+        );
+    }
+
     getAllRecords(username: string): Observable<GameRecord[]> {
         if (this.recordsLoaded && this.records.length > 0) {
             return of(this.records);

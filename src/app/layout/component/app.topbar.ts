@@ -19,6 +19,7 @@ import { VersionService } from '../../service/version.service';
 export class AppTopbar {
     isLoading$;
     version: string;
+    username: string = '';
 
     constructor(
         public layoutService: LayoutService,
@@ -30,6 +31,22 @@ export class AppTopbar {
     ) {
         this.isLoading$ = this.loadingService.loading$;
         this.version = this.versionService.getVersion();
+        this.loadCurrentUser();
+    }
+
+    private loadCurrentUser(): void {
+        const rawUsername = this.loginService.getUsername();
+        if (rawUsername) {
+            this.dataService.getCurrentUser(rawUsername).subscribe(response => {
+                if (response.success && response.user) {
+                    // Use the properly capitalized username from the API response
+                    this.username = response.user.username;
+                } else {
+                    // Fallback to the username from login service
+                    this.username = rawUsername;
+                }
+            });
+        }
     }
 
     ngOnInit() {
