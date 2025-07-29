@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { StyleClassModule } from 'primeng/styleclass';
-import { AppConfigurator } from '../../layout/component/app.configurator';
 import { LayoutService } from '../service/layout.service';
 import { DataService } from '../../service/data.service';
 import { LoginService } from '../../service/login.service';
@@ -15,7 +13,7 @@ import { VersionService } from '../../service/version.service';
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator, ToastModule, ProgressBar],
+    imports: [RouterModule, CommonModule, ToastModule, ProgressBar],
     templateUrl: 'app.topbar.html'
 })
 export class AppTopbar {
@@ -48,6 +46,10 @@ export class AppTopbar {
 
     openDashboard(): void {
         this.router.navigate(['/']);
+    }
+
+    openProfile(): void {
+        this.router.navigate(['/profile']);
     }
 
     logout(): void {

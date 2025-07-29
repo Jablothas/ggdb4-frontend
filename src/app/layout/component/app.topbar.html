@@ -45,11 +45,6 @@
     </div>
 
     <div class="layout-topbar-actions">
-        <div class="layout-config-menu">
-            <div class="relative">
-                <app-configurator />
-            </div>
-        </div>
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
                 <button type="button" class="layout-topbar-action" (click)="openDashboard()">
@@ -60,10 +55,10 @@
                     <i class="pi pi-database"></i>
                     <span>Entries</span>
                 </button>
-                <button class="layout-topbar-action layout-topbar-action-highlight" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
-                    <i class="pi pi-palette"></i>
+                <button type="button" class="layout-topbar-action" (click)="openProfile()">
+                    <i class="pi pi-user"></i>
+                    <span>Profile</span>
                 </button>
-                <app-configurator />
                 <button type="button" class="layout-topbar-action" (click)="logout()">
                     <i class="pi pi-power-off"></i>
                     <span>Logout</span>
