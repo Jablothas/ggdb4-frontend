@@ -23,6 +23,7 @@ import { ToastService } from '../../service/toast.service';
 import { ConfirmationService } from 'primeng/api';
 import { StatService } from '../../service/stat.service';
 import { Toolbar } from 'primeng/toolbar';
+import { ClipboardService } from '../../service/clipboard.service';
 
 @Component({
     selector: 'app-detail',
@@ -68,7 +69,8 @@ export class DetailComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private toast: ToastService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private clipboardService: ClipboardService
     ) {}
 
     ngOnInit(): void {
@@ -228,5 +230,25 @@ export class DetailComponent implements OnInit {
 
     returnToOverview() {
         this.router.navigate(['/overview'], {});
+    }
+
+    async copyCardToClipboard(): Promise<void> {
+        try {
+            const rawRecord: GameRecord = {
+                ...this.form.value,
+                mainQuestDone: this.form.value.mainQuestDone ? 1 : 0,
+                replay: this.form.value.replay ? 1 : 0
+            };
+
+            await this.clipboardService.generateAndCopyCardToClipboard(rawRecord, this.totalScore);
+            this.toast.success('Copied!', 'Game card copied to clipboard as PNG');
+        } catch (error) {
+            console.error('Failed to copy card:', error);
+            if (error instanceof Error && error.message.includes('downloaded')) {
+                this.toast.success('Downloaded', 'Clipboard not supported. Image downloaded instead.');
+            } else {
+                this.toast.error('Copy failed', 'Unable to copy card to clipboard');
+            }
+        }
     }
 }
