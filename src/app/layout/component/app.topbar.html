@@ -40,11 +40,14 @@
                     </g>
                 </g>
             </svg>
-            <span class="text-primary font-bold">GoodGamesDB</span><span style="font-size: 1rem; margin-top: 1px" class="font-bold">{{ version }}</span>
+            <!-- Show full title on larger screens, only version on small screens -->
+            <span class="text-primary font-bold hidden sm:inline">GoodGamesDB</span>
+            <span style="font-size: 1rem; margin-top: 1px" class="font-bold">{{ version }}</span>
         </a>
     </div>
 
     <div class="layout-topbar-actions">
+        <!-- Desktop version: show logged in info and navigation -->
         <div class="layout-topbar-menu hidden lg:block">
             <div class="layout-topbar-menu-content">
                 <span class="text-muted-color text-sm flex items-center px-3 py-2 font-bold">Logged in as &nbsp;<span style="color: var(--primary-color)">{{ username }}</span></span>
@@ -63,6 +66,28 @@
                 <button type="button" class="layout-topbar-action" (click)="logout()">
                     <i class="pi pi-power-off"></i>
                     <span>Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile/Tablet version: centered navigation buttons without logged in info -->
+        <div class="layout-topbar-menu-mobile flex lg:hidden justify-center flex-1">
+            <div class="flex items-center gap-1">
+                <button type="button" class="layout-topbar-action-mobile" (click)="openDashboard()" [class.active]="isActive('/')">
+                    <i class="pi pi-home"></i>
+                    <span class="hidden sm:inline">Home</span>
+                </button>
+                <button type="button" class="layout-topbar-action-mobile" (click)="openOverview()" [class.active]="isActive('/overview')">
+                    <i class="pi pi-database"></i>
+                    <span class="hidden sm:inline">Entries</span>
+                </button>
+                <button type="button" class="layout-topbar-action-mobile" (click)="openProfile()" [class.active]="isActive('/profile')">
+                    <i class="pi pi-user"></i>
+                    <span class="hidden sm:inline">Profile</span>
+                </button>
+                <button type="button" class="layout-topbar-action-mobile" (click)="logout()">
+                    <i class="pi pi-power-off"></i>
+                    <span class="hidden sm:inline">Logout</span>
                 </button>
             </div>
         </div>

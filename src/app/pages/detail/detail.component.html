@@ -1,5 +1,8 @@
 <div class="p-4">
-    <p-toolbar class="mb-4">
+    <div class="max-w-none mx-auto">
+        <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] px-4 py-4">
+            <div class="max-w-none mx-auto">
+                <p-toolbar class="mb-4">
         <!-- Left: Buttons -->
         <ng-template pTemplate="start">
             <div class="flex flex-wrap items-center gap-2">
@@ -125,88 +128,121 @@
             </div>
         </ng-template>
     </p-toolbar>
+            </div>
+        </div>
+
+        <!-- Content with top margin to account for fixed toolbar -->
+        <div class="pt-8">
+            <div class="max-w-none mx-auto">
     <div class="mb-4"></div>
 
     <!-- Form section -->
     <form *ngIf="form" [formGroup]="form">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 items-stretch">
-            <!-- Record Info -->
-            <div class="card flex flex-col gap-4 md:col-span-1 h-full">
-                <div class="text-xl font-semibold">Record Information</div>
+        <div class="flex flex-col gap-4 mt-2">
+            <!-- Record Info - Full Width at Top -->
+            <div class="w-full">
+                <p-fieldset legend="Record Information">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label for="name" class="text-sm font-medium">Name *</label>
+                            <input id="name" pInputText formControlName="name" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label for="type" class="text-sm font-medium">Type *</label>
+                            <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label for="location" class="text-sm font-medium">Location *</label>
+                            <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
+                            <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true"></p-datepicker>
+                        </div>
+                    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex flex-col gap-1">
-                        <label for="name" class="text-sm font-medium">Name *</label>
-                        <input id="name" pInputText formControlName="name" />
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="type" class="text-sm font-medium">Type *</label>
-                        <p-select id="type" formControlName="type" [options]="recordTypes" placeholder="Select type"></p-select>
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="location" class="text-sm font-medium">Location *</label>
-                        <p-select id="location" formControlName="location" [options]="locationTypes" placeholder="Select location"></p-select>
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
-                        <p-datepicker id="finishDate" formControlName="finishDate" showIcon class="w-full" [fluid]="true"></p-datepicker>
-                    </div>
-                </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                        <div class="flex flex-col gap-1">
+                            <label for="note" class="text-sm font-medium">Note</label>
+                            <textarea pTextarea id="note" formControlName="note" rows="4" placeholder="Add note" class="resize-none"></textarea>
+                        </div>
 
-                <div class="flex flex-col gap-1">
-                    <label for="note" class="text-sm font-medium">Note</label>
-                    <textarea pTextarea id="note" formControlName="note" rows="2" placeholder="Add note" class="resize-none"></textarea>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium">Replay Value *</label>
-                    <div class="flex flex-col gap-2">
-                        <ng-container *ngFor="let option of replayValueOptions">
-                            <div class="flex items-center gap-2">
-                                <p-radioButton name="replayValue" [value]="option.value" formControlName="replayValue"></p-radioButton>
-                                <label class="text-sm">{{ option.label }}</label>
+                        <div class="flex flex-col gap-7">
+                            <label class="text-sm font-medium">Replay Value *</label>
+                            <div class="flex flex-col gap-3 mt-3">
+                                <p-slider
+                                    formControlName="replayValue"
+                                    [min]="1"
+                                    [max]="5"
+                                    [step]="1"
+                                    class="w-full replay-slider"
+                                ></p-slider>
+                                <div class="flex justify-between text-xs opacity-70 px-1">
+                                    <span>No replay</span>
+                                    <span>Maybe</span>
+                                    <span>Would replay</span>
+                                    <span>Definitely</span>
+                                    <span>Can't stop!</span>
+                                </div>
+                                <div class="text-sm font-medium text-center" *ngIf="form.get('replayValue')?.value">
+                                    {{ getReplayValueLabel(form.get('replayValue')?.value) }}
+                                </div>
                             </div>
-                        </ng-container>
+                            <small class="text-red-500 text-xs" *ngIf="form.get('replayValue')?.invalid && form.get('replayValue')?.touched">
+                                Please select a replay value.
+                            </small>
+                        </div>
                     </div>
-                    <small class="text-red-500 text-xs" *ngIf="form.get('replayValue')?.invalid && form.get('replayValue')?.touched">
-                        Please select a replay value.
-                    </small>
-                </div>
 
-                <div class="flex flex-col gap-3">
-                    <div class="flex items-center gap-2">
-                        <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
-                        <label class="text-sm">Main Quest / Story / Campaign finished</label>
+                    <div class="flex flex-col gap-3 mt-4">
+                        <div class="flex items-center gap-2">
+                            <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
+                            <label class="text-sm">Main Quest / Story / Campaign finished</label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
+                            <label class="text-sm">Replay</label>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
-                        <label class="text-sm">Replay</label>
-                    </div>
-                </div>
+                </p-fieldset>
             </div>
 
-            <!-- Score Cards -->
-            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 auto-rows-fr">
+            <!-- Score Categories - 3 per row (excluding impression) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <ng-container *ngFor="let field of scoreFields">
-                    <div class="card p-4 flex flex-col gap-1 h-full">
-                        <div class="flex items-center justify-between">
-                            <label [for]="field" class="text-sm font-semibold text-[var(--primary-color)] tracking-normal">
-                                {{ field.replace('score', '') }}
-                            </label>
+                    <p-fieldset *ngIf="field !== 'scoreImpression'" [legend]="field.replace('score', '')">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm opacity-80">{{ scoreFieldComments[field] }}</span>
                             <p-toggleSwitch [formControlName]="field + 'Enabled'"></p-toggleSwitch>
                         </div>
-                        <div class="text-sm opacity-80">
-                            {{ scoreFieldComments[field] }}
-                        </div>
-                        <div class="flex items-center gap-2 pt-1">
+                        <div class="flex items-center gap-2">
                             <p-rating [formControlName]="field" [disabled]="!form.get(field + 'Enabled')?.value" [stars]="10"></p-rating>
                             <span *ngIf="form.get(field + 'Enabled')?.value" class="text-sm min-w-[30px]">
                                 {{ form.get(field)?.value }}/10
                             </span>
                         </div>
-                    </div>
+                    </p-fieldset>
                 </ng-container>
+            </div>
+
+            <!-- Impression - Full Width at Bottom -->
+            <div class="w-full">
+                <p-fieldset legend="Impression" class="impression-fieldset">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm opacity-80">{{ scoreFieldComments['scoreImpression'] }}</span>
+                        <p-toggleSwitch formControlName="scoreImpressionEnabled"></p-toggleSwitch>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p-rating formControlName="scoreImpression" [disabled]="!form.get('scoreImpressionEnabled')?.value" [stars]="10"></p-rating>
+                        <span *ngIf="form.get('scoreImpressionEnabled')?.value" class="text-sm min-w-[30px]">
+                            {{ form.get('scoreImpression')?.value }}/10
+                        </span>
+                    </div>
+                </p-fieldset>
             </div>
         </div>
     </form>
+            </div>
+        </div>
+    </div>
 </div>

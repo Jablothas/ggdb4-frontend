@@ -1,5 +1,15 @@
 [
     {
+        "version": "4.2.3",
+        "date": "2025-07-30",
+        "changes": [
+            "Added filter for dropdown of locations",
+            "Improved detail view with new design",
+            "Several improvements to layout",
+            "Several improvements to table/smartphone layout"
+        ]
+    },
+    {
         "version": "4.2.2",
         "date": "2025-07-29",
         "changes": [

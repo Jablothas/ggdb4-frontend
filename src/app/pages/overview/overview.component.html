@@ -1,5 +1,8 @@
 <div class="p-4" [ngClass]="{ 'no-scroll': displayMode === 'Table' }">
-    <p-toolbar class="mb-4">
+    <div class="max-w-none mx-auto">
+        <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] px-4 py-4">
+            <div class="max-w-none mx-auto">
+                <p-toolbar class="mb-4">
         <ng-template pTemplate="start">
             <div class="flex items-center gap-2">
                 <p-button icon="pi pi-plus-circle" label="Add" (click)="openAdd()"></p-button>
@@ -15,11 +18,17 @@
 
                 <p-iconfield>
                     <p-inputicon styleClass="pi pi-search" />
-                    <input type="text" pInputText placeholder="Search games..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-80" />
+                    <input type="text" pInputText placeholder="Search games..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-40 sm:w-60 lg:w-80" />
                 </p-iconfield>
             </div>
         </ng-template>
     </p-toolbar>
+            </div>
+        </div>
+
+        <!-- Content with top margin to account for fixed toolbar -->
+        <div class="pt-8">
+            <div class="max-w-none mx-auto">
 
     <ng-container *ngIf="displayMode === 'Cards'; else tableView">
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -131,6 +140,9 @@
             </p-table>
         </div>
     </ng-template>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div><br /><br /><br /></div>
