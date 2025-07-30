@@ -14,6 +14,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { Rating } from 'primeng/rating';
 import { RadioButton } from 'primeng/radiobutton';
 import { TooltipModule } from 'primeng/tooltip';
+import { FieldsetModule } from 'primeng/fieldset';
 
 import { RecordType } from '../../enum/type.enum';
 import { Locations } from '../../enum/location.enum';
@@ -29,7 +30,7 @@ import { ClipboardService } from '../../service/clipboard.service';
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, RadioButton, Toolbar, TooltipModule],
+    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, RadioButton, Toolbar, TooltipModule, FieldsetModule],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
