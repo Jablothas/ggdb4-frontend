@@ -11,6 +11,7 @@ export enum Locations {
     N64 = 'Nintendo 64',
     NINTENDO_3DS = 'Nintendo 3DS',
     NINTENDO_CONSOLE = 'Nintendo Switch',
+    NINTENDO_CONSOLE2 = 'Nintendo Switch 2',
     NINTENDO_DS = 'Nintendo DS',
     NES = 'Nintendo Entertainment System',
     OTHER = 'Other',

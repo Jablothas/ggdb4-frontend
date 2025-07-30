@@ -145,7 +145,7 @@
                     </div>
                     <div class="flex flex-col gap-1">
                         <label for="location" class="text-sm font-medium">Location *</label>
-                        <p-select id="location" formControlName="location" [options]="locationTypes" placeholder="Select location"></p-select>
+                        <p-select id="location" formControlName="location" [options]="locationTypes" [filter]="true" placeholder="Select location"></p-select>
                     </div>
                     <div class="flex flex-col gap-1">
                         <label for="finishDate" class="text-sm font-medium">Finish Date *</label>
