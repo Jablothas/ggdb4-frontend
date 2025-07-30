@@ -2,6 +2,14 @@
     display: none !important;
 }
 
+::ng-deep .replay-slider .p-slider-handle {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+::ng-deep .replay-slider .p-slider-range {
+    background-color: var(--primary-color) !important;
+}
 
 .form-container {
     max-width: 1200px;

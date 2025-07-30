@@ -1,6 +1,8 @@
 <div class="p-4">
     <div class="max-w-none mx-auto">
-        <p-toolbar class="mb-4">
+        <div class="fixed top-16 left-0 right-0 z-10 bg-[var(--surface-ground)] px-4 py-4">
+            <div class="max-w-none mx-auto">
+                <p-toolbar class="mb-4">
         <!-- Left: Buttons -->
         <ng-template pTemplate="start">
             <div class="flex flex-wrap items-center gap-2">
@@ -126,6 +128,11 @@
             </div>
         </ng-template>
     </p-toolbar>
+            </div>
+        </div>
+
+        <!-- Content with top margin to account for fixed toolbar -->
+        <div class="pt-8">
     <div class="mb-4"></div>
 
     <!-- Form section -->
@@ -153,36 +160,47 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-1 mt-4">
-                        <label for="note" class="text-sm font-medium">Note</label>
-                        <textarea pTextarea id="note" formControlName="note" rows="2" placeholder="Add note" class="resize-none"></textarea>
-                    </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-                        <div class="flex flex-col gap-2">
+                        <div class="flex flex-col gap-1">
+                            <label for="note" class="text-sm font-medium">Note</label>
+                            <textarea pTextarea id="note" formControlName="note" rows="4" placeholder="Add note" class="resize-none"></textarea>
+                        </div>
+
+                        <div class="flex flex-col gap-7">
                             <label class="text-sm font-medium">Replay Value *</label>
-                            <div class="flex flex-col gap-2">
-                                <ng-container *ngFor="let option of replayValueOptions">
-                                    <div class="flex items-center gap-2">
-                                        <p-radioButton name="replayValue" [value]="option.value" formControlName="replayValue"></p-radioButton>
-                                        <label class="text-sm">{{ option.label }}</label>
-                                    </div>
-                                </ng-container>
+                            <div class="flex flex-col gap-3 mt-3">
+                                <p-slider
+                                    formControlName="replayValue"
+                                    [min]="1"
+                                    [max]="5"
+                                    [step]="1"
+                                    class="w-full replay-slider"
+                                ></p-slider>
+                                <div class="flex justify-between text-xs opacity-70 px-1">
+                                    <span>No replay</span>
+                                    <span>Maybe</span>
+                                    <span>Would replay</span>
+                                    <span>Definitely</span>
+                                    <span>Can't stop!</span>
+                                </div>
+                                <div class="text-sm font-medium text-center" *ngIf="form.get('replayValue')?.value">
+                                    {{ getReplayValueLabel(form.get('replayValue')?.value) }}
+                                </div>
                             </div>
                             <small class="text-red-500 text-xs" *ngIf="form.get('replayValue')?.invalid && form.get('replayValue')?.touched">
                                 Please select a replay value.
                             </small>
                         </div>
+                    </div>
 
-                        <div class="flex flex-col gap-3">
-                            <div class="flex items-center gap-2">
-                                <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
-                                <label class="text-sm">Main Quest / Story / Campaign finished</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
-                                <label class="text-sm">Replay</label>
-                            </div>
+                    <div class="flex flex-col gap-3 mt-4">
+                        <div class="flex items-center gap-2">
+                            <p-toggleSwitch formControlName="mainQuestDone"></p-toggleSwitch>
+                            <label class="text-sm">Main Quest / Story / Campaign finished</label>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p-toggleSwitch formControlName="replay"></p-toggleSwitch>
+                            <label class="text-sm">Replay</label>
                         </div>
                     </div>
                 </p-fieldset>
@@ -223,5 +241,6 @@
             </div>
         </div>
     </form>
+        </div>
     </div>
 </div>

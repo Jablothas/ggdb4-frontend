@@ -30,7 +30,7 @@ import { ClipboardService } from '../../service/clipboard.service';
 @Component({
     selector: 'app-detail',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, RadioButton, Toolbar, TooltipModule, FieldsetModule],
+    imports: [CommonModule, ReactiveFormsModule, InputTextModule, ToggleSwitchModule, SelectModule, DatePickerModule, TextareaModule, FloatLabelModule, SliderModule, ButtonModule, Rating, Toolbar, TooltipModule, FieldsetModule],
     providers: [StatService],
     templateUrl: './detail.component.html',
     styleUrl: './detail.component.scss'
@@ -75,6 +75,11 @@ export class DetailComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private clipboardService: ClipboardService
     ) {}
+
+    getReplayValueLabel(value: number): string {
+        const option = this.replayValueOptions.find(opt => opt.value === value);
+        return option ? option.label : '';
+    }
 
     ngOnInit(): void {
         this.route.queryParams.subscribe((params) => {
