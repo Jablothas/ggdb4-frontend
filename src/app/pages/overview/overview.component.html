@@ -18,7 +18,7 @@
 
                 <p-iconfield>
                     <p-inputicon styleClass="pi pi-search" />
-                    <input type="text" pInputText placeholder="Search games..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-80" />
+                    <input type="text" pInputText placeholder="Search games..." [(ngModel)]="searchTerm" (keydown.enter)="onSearchEnter()" class="w-60" />
                 </p-iconfield>
             </div>
         </ng-template>
@@ -28,6 +28,7 @@
 
         <!-- Content with top margin to account for fixed toolbar -->
         <div class="pt-8">
+            <div class="max-w-none mx-auto">
 
     <ng-container *ngIf="displayMode === 'Cards'; else tableView">
         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -139,6 +140,8 @@
             </p-table>
         </div>
     </ng-template>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -217,4 +220,3 @@
         </div>
     </div>
 </p-dialog>
-</div>
