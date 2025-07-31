@@ -72,10 +72,6 @@ export class ClipboardService {
         ctx.fillStyle = surfaceColors.dark;
         ctx.fillRect(0, 0, width, height);
 
-        ctx.strokeStyle = primaryColor;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
-
         ctx.fillStyle = primaryColor;
         ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'left';
