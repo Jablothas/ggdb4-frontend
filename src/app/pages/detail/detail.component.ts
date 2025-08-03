@@ -109,10 +109,10 @@ export class DetailComponent implements OnInit {
             status: [record?.status ?? ''],
             type: [record?.type ?? '', Validators.required],
             location: [record?.location ? Locations[record.location as keyof typeof Locations] : '', Validators.required],
-            createDate: [record?.createDate ? new Date(record.createDate) : ''],
-            finishDate: [record?.finishDate ? new Date(record.finishDate) : '', Validators.required],
+            createDate: [record?.createDate ? this.parseStringToDate(record.createDate) : ''],
+            finishDate: [record?.finishDate ? this.parseStringToDate(record.finishDate) : '', Validators.required],
             note: [record?.note ?? ''],
-            replayValue: [record?.replayValue ?? null, Validators.required],
+            replayValue: [record?.replayValue ?? 1, Validators.required],
             mainQuestDone: [record?.mainQuestDone === 1],
             replay: [record?.replay === 1],
             ...Object.fromEntries(this.scoreFields.map((field) => [field, record?.[field as keyof GameRecord] ?? 1])),
@@ -171,8 +171,8 @@ export class DetailComponent implements OnInit {
             status: raw.status,
             type: raw.type,
             location: this.getEnumKeyFromValue(Locations, raw.location),
-            createDate: raw.createDate ? new Date(raw.createDate).toISOString().split('T')[0] : '',
-            finishDate: raw.finishDate ? new Date(raw.finishDate).toISOString().split('T')[0] : '',
+            createDate: raw.createDate ? this.formatDateToString(raw.createDate) : '',
+            finishDate: raw.finishDate ? this.formatDateToString(raw.finishDate) : '',
             note: raw.note,
             replay: raw.replay ? 1 : 0,
             mainQuestDone: raw.mainQuestDone ? 1 : 0,
@@ -234,6 +234,27 @@ export class DetailComponent implements OnInit {
 
     getEnumKeyFromValue(enumObj: any, value: string): string {
         return Object.keys(enumObj).find((key) => enumObj[key] === value) || value;
+    }
+
+    formatDateToString(date: Date | string): string {
+        if (!date) return '';
+
+        const dateObj = date instanceof Date ? date : new Date(date);
+
+        // Use local date components to avoid timezone issues
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+    parseStringToDate(dateString: string): Date | null {
+        if (!dateString) return null;
+
+        // Parse the date string and create a date in local timezone
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day);
     }
 
     returnToOverview() {
